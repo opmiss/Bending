@@ -7,6 +7,7 @@ import edu.gatech.cc.model.Shape2d;
 public class PlanarStretch {
 	v2d[] C; 
 	public void setup() {
+		C = new v2d[4]; 
 		
 		
 	}
