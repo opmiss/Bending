@@ -17,7 +17,7 @@ public class CatHead extends PApplet {
 	double SA0 = PI/2-L0/R0/2; 
 	double EA0 = PI/2+L0/R0/2; */
 	Arc2d C0 = Arc2d.Line(S0.C, PI*2/5*S0.C.y); 
-	Arc2d C1 = new Arc2d(C0); 
+	Arc2d C1 = new Arc2d(C0);  
 	public void setup() {
 		size((int)width, (int)height, P2D);
 		frameRate(20);
@@ -27,12 +27,14 @@ public class CatHead extends PApplet {
 	public void mousePressed() {
 		
 	}
+	boolean showO=true;
+	boolean showB=true; 
 	public void draw() {
 		background(255);
-		text("error: "+ nf((float)(1 - S1.area()/areaS0), 1, 3) , 20, 50);
+		text("error: "+ nf((float)(areaS0 - S1.area()), 1, 3) , 20, 50);
 		smooth(); 
-		showOriginal(); 
-		showBend(); 
+		if (showO) showOriginal(); 
+		if (showB) showBend(); 
 	}
 	
 	public void showOriginal(){
@@ -67,21 +69,25 @@ public class CatHead extends PApplet {
 	}
 	
 	public void keyPressed(){
-		if (key == 'a'){
-			C1.bend(-1.2);
+		if (key == '1'){
+			C1.bend(-1.5);
 			S1 = S0.Map(C0, C1); 
+			System.out.println(S0.area()); 
+			System.out.println(S1.area()); 
 		}
-		/*if (key == 'b'){
-			C1.bend(-0.1);
+		
+		if (key == '2'){
+			C1.bend(1.5);
 			S1 = S0.Map(C0, C1); 
+			System.out.println(S0.area()); 
+			System.out.println(S1.area()); 
 		}
-		if (key == 'c'){
-			C1.stretch(5);
-			S1 = S0.Map(C0, C1); 
+		
+		if (key == 'o'){
+			showO = !showO; 
 		}
-		if (key == 'd'){
-			C1.stretch(-5);
-			S1 = S0.Map(C0, C1); 
-		}*/
+		if (key == 'b'){
+			showB = !showB; 
+		}
 	}
 }

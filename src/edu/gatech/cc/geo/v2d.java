@@ -88,6 +88,10 @@ public class v2d {
 		y += s * V.y;
 	}
 	
+	public v2d a(double s, v2d V){
+		return new v2d(x + s * V.x, y += s * V.y);
+	}
+	
 	public static v2d mid(v2d a, v2d b){
 		return new v2d((a.x+b.x)/2, (a.y+b.y)/2); 
 	}
@@ -129,6 +133,72 @@ public class v2d {
 		pa.ellipse((float)x, (float)y, 16, 16);
 	}
 	
+	public v2d map(v2d C, v2d O, double R){
+		//r -- original offset dis
+		double r = this.y-C.y; 
+		boolean Pabove = r<0?true:false; 
+		if (Pabove) r=-r; 
+		//l -- dis from projection to C
+		double l = this.x-C.x; 
+		double a = l/R; 
+		v2d X = new v2d(C.x + R*Math.sin(a), C.y + R*(1-Math.cos(a))); 
+		v2d oft = new v2d(O, X);
+		oft.unit(); 
+		boolean Obelow = O.y>C.y?true:false; 
+		
+		double h; 
+		if (Obelow){
+			if (Pabove){
+				h = Math.sqrt(R*R + R*r*2)-R;  
+				return X.a(h, oft); 
+			}
+			else {
+				h = Math.sqrt(R*R - R*r*2)-R;  
+				return X.a(h, oft);
+			}
+		}
+		else {
+			if (Pabove){
+				h = Math.sqrt(R*R - R*r*2)-R;  
+				return X.a(h, oft); 
+			}
+			else {
+				h = Math.sqrt(R*R + R*r*2)-R;  
+				return X.a(h, oft);
+			}
+		}
+	}
+	
+	public v2d noMap(v2d C, v2d O, double R){
+		//r -- original offset dis
+		double r = this.y-C.y; 
+		boolean Pabove = r<0?true:false; 
+		if (Pabove) r=-r;
+		//l -- dis from projection to C
+		double l = this.x-C.x; 
+		double a = l/R; 
+		v2d X = new v2d(C.x + R*Math.sin(a), C.y + R*(1-Math.cos(a))); 
+		v2d oft = new v2d(O, X);
+		oft.unit(); 
+		boolean Obelow = O.y>C.y?true:false; 
+		if (Obelow){
+			if (Pabove){
+				return X.a(r, oft); 
+			}
+			else { 
+				return X.a(-r, oft);
+			}
+		}
+		else {
+			if (Pabove){
+				return X.a(-r, oft); 
+			}
+			else { 
+				return X.a(r, oft);
+			}
+		}
+	}
+	
 	public v2d map(v2d O0, double R0, v2d O1, double R1){
 		//TODO: dot product to fix the sign 
 		//v2d v0 = new v2d(O0, this);
@@ -154,9 +224,5 @@ public class v2d {
 		v2d r = new v2d(O1);
 		r.add(t, V);
 		return r; 
-	}
-	
-	public v2d map(Arc2d A0, Arc2d A1){
-		return map(A0.O, A0.R, A1.O, A1.R); 
 	}
 }
