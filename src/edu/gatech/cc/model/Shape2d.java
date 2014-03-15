@@ -22,6 +22,7 @@ public class Shape2d {
 		A = this.area(); 
 	}
 	
+	
 	public Shape2d(Shape2d shape){
 		P = new v2d[shape.num]; 
 		num = shape.num; 
@@ -30,6 +31,39 @@ public class Shape2d {
 		A = this.area(); 
 	}
 	
+	public static Shape2d Layers(v2d O, double L, double H, int n, int m){
+		v2d[] pts = new v2d[m*n]; 
+		double dl = L/(n-1);
+		double dh = H/(m-1);
+		int i=0; 
+		for (double y = O.y-H/2; y <= O.y+H/2; y+=dh){
+			for (double x = O.x - L/2; x <= O.x + L/2; x+=dl){
+				pts[i++] = new v2d(x, y); 
+			}
+		}
+		return new Shape2d(pts, i); 
+	}
+	
+	public void showLayers(int m, int n, PApplet pa){
+		for (int i=0; i<m; i++){
+			pa.beginShape(); 
+			for (int j=0; j<n; j++){
+				P[i*n+j].vert(pa);
+			}
+			pa.endShape(); 
+		}
+		pa.beginShape(); 
+		for (int i=0; i<m; i++){
+			P[i*n].vert(pa);
+		}
+		pa.endShape(); 
+		pa.beginShape(); 
+		for (int i=0; i<m; i++){
+			P[i*n+(n-1)].vert(pa);
+		}
+		pa.endShape(); 
+	}
+
 	public static Shape2d CatHead(v2d O, double A, double B){
 		v2d[] pts = new v2d[400]; 
 		double da = Math.PI/180; 

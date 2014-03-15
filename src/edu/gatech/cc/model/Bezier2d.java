@@ -8,7 +8,7 @@ public class Bezier2d {
 	v2d[] P; //curve points 
 	int num; 
 	
-	Bezier2d(v2d[] Ctrl, int N){
+	public Bezier2d(v2d[] Ctrl, int N){
 		C = Ctrl; 
 		double d = 1.0/N;
 		num = N+1; 
@@ -24,6 +24,7 @@ public class Bezier2d {
 			v2d m3 = C[2].s(s, C[3]); 
 			P[i++] = (m1.s(s, m2)).s(s, m2.s(s, m3)); 
 		}
+		num=i; 
 	}
 	
 	int pid = -1; 
@@ -36,6 +37,10 @@ public class Bezier2d {
 		}
 		pid = id; 
 	}
+	public void drop(){
+		pid=-1; 
+	}
+	
 	
 	public void move(v2d M){
 		if (pid<0) return; 
@@ -93,6 +98,12 @@ public class Bezier2d {
 			P[i].vert(pa);
 		}
 		pa.endShape(); 
+	}
+	
+	public void showCtrl(PApplet pa){
+		for (int i=0; i<4; i++){
+			C[i].show(pa);
+		}
 	}
 	
 }

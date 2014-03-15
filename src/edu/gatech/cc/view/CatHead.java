@@ -10,14 +10,14 @@ public class CatHead extends PApplet {
 	Shape2d S0 = Shape2d.CatHead(new v2d(width/2,  height/2), 150, 100); 
 	double areaS0 = S0.area(); 
 	Shape2d S1 = new Shape2d(S0); 
-	/*v2d O0 = new v2d(width/2, 0);
-	double R0 = O0.disTo(S0.C); 
-	double L0 = PI*2/5*R0;  
-	double A0 = L0/R0; 
-	double SA0 = PI/2-L0/R0/2; 
-	double EA0 = PI/2+L0/R0/2; */
+	
 	Arc2d C0 = Arc2d.Line(S0.C, PI*2/5*S0.C.y); 
 	Arc2d C1 = new Arc2d(C0);  
+	
+	int numLayers = 9; 
+	Shape2d L0 = Shape2d.Layers(C0.C, C0.L, 280, 100, numLayers); 
+	Shape2d L1 = new Shape2d(L0); 
+	
 	public void setup() {
 		size((int)width, (int)height, P2D);
 		frameRate(20);
@@ -38,6 +38,10 @@ public class CatHead extends PApplet {
 	}
 	
 	public void showOriginal(){
+		//show layers
+		noFill(); 
+		this.stroke(200);
+		L0.showLayers(numLayers, 100, this);
 		//Show shape 
 		noFill(); 
 		stroke(0); 
@@ -53,6 +57,10 @@ public class CatHead extends PApplet {
 	}
 	
 	public void showBend(){
+		//show layers
+		noFill(); 
+		this.stroke(200);
+		L1.showLayers(numLayers, 100, this);
 		//Show shape 
 		noFill(); 
 		stroke(0); 
@@ -71,16 +79,15 @@ public class CatHead extends PApplet {
 	public void keyPressed(){
 		if (key == '1'){
 			C1.bend(-1.5);
-			S1 = S0.Map(C0, C1); 
-			System.out.println(S0.area()); 
-			System.out.println(S1.area()); 
+			S1 = S0.Map(C0, C1);  
+			L1 = L0.Map(C0, C1); 
+			
 		}
 		
 		if (key == '2'){
 			C1.bend(1.5);
 			S1 = S0.Map(C0, C1); 
-			System.out.println(S0.area()); 
-			System.out.println(S1.area()); 
+			L1 = L0.Map(C0, C1); 
 		}
 		
 		if (key == 'o'){
