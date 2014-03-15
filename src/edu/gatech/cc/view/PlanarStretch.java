@@ -16,6 +16,7 @@ public class PlanarStretch extends PApplet{
 		C[2] = new v2d(width/2+100, height/2); 
 		C[3] = new v2d(width/2+300, height/2); 
 		spine = new Bezier2d(C, 100); 
+		spine.computeGrid();
 		//smooth(); 
 	}
 	public void mousePressed() {
@@ -28,9 +29,11 @@ public class PlanarStretch extends PApplet{
 		spine.drop();
 	}
 	public void draw() {
+		smooth(); 
 		background(255); 
 		spine.show(this);
 		spine.showCtrl(this);
+		spine.showGrid(this);
 	}
 	
 	public void showOriginal(){

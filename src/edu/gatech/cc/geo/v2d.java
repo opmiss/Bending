@@ -51,9 +51,13 @@ public class v2d {
 		return (x * x + y * y);
 	}
 	
-	public v2d left(){
+	public v2d right(){
 		return new v2d(-y, x); 
 	}
+	public v2d left(){
+		return new v2d(y, -x); 
+	}
+	
 	public void turnLeft(){
 		double w = x;
 		x = -y;
@@ -89,7 +93,7 @@ public class v2d {
 	}
 	
 	public v2d a(double s, v2d V){
-		return new v2d(x + s * V.x, y += s * V.y);
+		return new v2d(x + s * V.x, y + s * V.y);
 	}
 	
 	public static v2d mid(v2d a, v2d b){
