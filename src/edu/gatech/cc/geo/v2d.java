@@ -105,6 +105,11 @@ public class v2d {
 		y += ay;  
 	}
 	
+	public static double solve(double kr){
+		
+		return (-1.0 + Math.sqrt(1+2.0*kr))/kr; 
+	}
+	
 	public static double radius(v2d A, v2d B, v2d C) { // signed radius of curvature
 		v2d AB = new v2d(A, B);
 		v2d AC = new v2d(A, C);
