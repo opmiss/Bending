@@ -19,7 +19,8 @@ public class CatHead extends PApplet {
 	Shape2d L1 = new Shape2d(L0); 
 	
 	public void setup() {
-		size((int)width, (int)height, P2D);
+		size((int)(width*1.28/2), (int)(height*1.2/2), P2D);
+		//translate(width/4, height/4); 
 		frameRate(20);
 		textSize(24); 
 		//register shape to the spine
@@ -31,7 +32,8 @@ public class CatHead extends PApplet {
 	boolean showB=true; 
 	public void draw() {
 		background(255);
-		text("error: "+ nf((float)(areaS0 - S1.area()), 1, 3) , 20, 50);
+		//text("error: "+ nf((float)(areaS0 - S1.area()), 1, 3) , 20, 50);
+		translate(-width/5.5f, -height/5); 
 		smooth(); 
 		if (showO) showOriginal(); 
 		if (showB) showBend(); 
@@ -93,8 +95,16 @@ public class CatHead extends PApplet {
 		if (key == 'o'){
 			showO = !showO; 
 		}
+	
 		if (key == 'b'){
 			showB = !showB; 
 		}
+		
+		if (key == 'c'){
+			System.out.println("save frame");
+			this.saveFrame("cathead-####.png");
+			
+		}
+		
 	}
 }

@@ -45,6 +45,10 @@ public class PlanarStretch extends PApplet{
 	}
 	
 	public void keyPressed(){
+		if (key=='c') {
+			System.out.println("save a frame"); 
+			saveFrame("pic-####.png"); 
+		}
 		
 	}
 
