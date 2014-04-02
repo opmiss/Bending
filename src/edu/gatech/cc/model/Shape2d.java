@@ -1,10 +1,8 @@
 package edu.gatech.cc.model;
 //import java.util.*;
-
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 import static java.lang.Math.PI;
-
 import processing.core.PApplet;
 import edu.gatech.cc.geo.v2d;
 
@@ -45,10 +43,12 @@ public class Shape2d {
 	}
 	
 	public void showLayers(int m, int n, PApplet pa){
+		//System.out.println("length: " + P.length); 
 		for (int i=0; i<m; i++){
-			pa.beginShape(); 
+			pa.beginShape();  
 			for (int j=0; j<n; j++){
-				P[i*n+j].vert(pa);
+				//System.out.println("counter: " + (i*n+j)); 
+				if (i*n+j < num) P[i*n+j].vert(pa);
 			}
 			pa.endShape(); 
 		}
@@ -59,9 +59,23 @@ public class Shape2d {
 		pa.endShape(); 
 		pa.beginShape(); 
 		for (int i=0; i<m; i++){
-			P[i*n+(n-1)].vert(pa);
+			if (i*n+(n-1) < num) P[i*n+(n-1)].vert(pa);
 		}
 		pa.endShape(); 
+	}
+	
+	public static Shape2d Ellipse(v2d O, double A, double B){
+		v2d[] pts = new v2d[400]; 
+		double da = Math.PI/180; 
+		double a, x, y; 
+		int i=0;  
+		for (a = -PI; a < PI; a+=da){
+			x = O.x + A*Math.cos(a);
+			y = O.y + B*Math.sin(a); 
+			pts[i] = new v2d(x, y); 
+			i++; 
+		}
+		return new Shape2d(pts, i); 
 	}
 
 	public static Shape2d CatHead(v2d O, double A, double B){
@@ -168,8 +182,8 @@ public class Shape2d {
 	public Shape2d Map(Arc2d C0, Arc2d C1){
 		v2d[] pts = new v2d[num]; 
 		for (int i=0; i<num; i++) {
-			pts[i] = P[i].map(C0.C, C1.O, C1.R); 
-			//pts[i] = P[i].noMap(C0.C, C1.O, C1.R); 
+			//pts[i] = P[i].map(C0.C, C1.O, C1.R); 
+			pts[i] = P[i].noMap(C0.C, C1.O, C1.R); 
 		}
 		return new Shape2d(pts, num); 
 	}

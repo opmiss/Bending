@@ -3,9 +3,7 @@ import edu.gatech.cc.geo.v3d;
 import edu.gatech.cc.geo.view;
 import processing.core.PApplet;
 
-
 public class Shape3d {
-	
 	// max sizes, counts, selected corners 
 	private int maxnv = 5000; // max number of vertices
 	private int maxnt = maxnv * 2; // max number of triangles
@@ -696,7 +694,7 @@ public class Shape3d {
 			y = Float.parseFloat(rest.substring(0, comma2));
 			z = Float.parseFloat(rest.substring(comma2 + 1, rest.length()));
 			G[k].set(x, y, z);
-			// println(k+":"+"("+x+","+y+","+z+"),");
+			pa.println(k+":"+"("+x+","+y+","+z+"),");
 		}
 		s = nv + 1;
 		nt = Integer.parseInt(ss[s]);

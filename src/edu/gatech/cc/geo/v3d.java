@@ -46,6 +46,12 @@ public class v3d {
 		z += s * V.z;
 		return this;
 	};
+	public v3d add(double s, v3d V, double t, v3d U) {
+		x += s * V.x + t * U.x;
+		y += s * V.y + t * U.y;
+		z += s * V.z + t * U.z;
+		return this;
+	};
 	public v3d sub(v3d V) {
 		x -= V.x;
 		y -= V.y;
@@ -207,10 +213,38 @@ public class v3d {
 	public void vert(PApplet pa){
 		pa.vertex((float)x, (float)y, (float)z);
 	}
+	
+	public v3d rotate(float a, v3d I, v3d J, v3d G) {
+		double x = v3d.dot(v3d.vec(G, this), I), y = v3d.dot(v3d.vec(G, this), J);
+		double c = Math.cos(a), s = Math.sin(a);
+		return this.add(x * c - x - y * s, I, x * s + y * c - y, J);
+	}; // Rotated by a around G in plane (I,J)
 
 	public static v3d R(v3d V, double a, v3d I, v3d J) {
 		double x = dot(V, I), y = dot(V, J);
 		double c = Math.cos(a), s = Math.sin(a);
 		return A(V, V(x * c - x - y * s, I, x * s + y * c - y, J));
 	}; // Rotated V by a parallel to plane (I,J)
+	
+	
+	public static v3d interpolate(v3d A, v3d B, float s){
+		return new v3d(A.x +s*(B.x-A.x), A.y +s*(B.y-A.y), A.z +s*(B.z-A.z)); 
+	}
+	
+	// Interpolation non-uniform (Neville's algorithm)
+	public static v3d NI(float a, v3d A, float b, v3d B, float t) {
+		return interpolate(A, B, (t - a) / (b - a));
+	} // P(a)=A, P(b)=B
+
+	public static v3d NI(float a, v3d A, float b, v3d B, float c, v3d C, float t) {
+		v3d P = NI(a, A, b, B, t);
+		v3d Q = NI(b, B, c, C, t);
+		return NI(a, P, c, Q, t);
+	} // P(a)=A, P(b)=B, P(c)=C
+
+	public static v3d NI(float a, v3d A, float b, v3d B, float c, v3d C, float d, v3d D, float t) {
+		v3d P = NI(a, A, b, B, c, C, t);
+		v3d Q = NI(b, B, c, C, d, D, t);
+		return NI(a, P, d, Q, t);
+	} // P(a)=A, P(b)=B, P(c)=C, P(d)=D
 }

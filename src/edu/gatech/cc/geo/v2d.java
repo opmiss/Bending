@@ -208,6 +208,11 @@ public class v2d {
 		}
 	}
 	
+	@Override
+	public String toString(){
+		return Double.toString(x)+", "+Double.toString(y); 
+	}
+	
 	public v2d map(v2d O0, double R0, v2d O1, double R1){
 		//TODO: dot product to fix the sign 
 		//v2d v0 = new v2d(O0, this);
@@ -234,4 +239,20 @@ public class v2d {
 		r.add(t, V);
 		return r; 
 	}
+	// Interpolation non-uniform (Neville's algorithm)
+	public static v2d NI(double a, v2d A, double b, v2d B, double t) {
+		return A.s((t - a)/(b - a), B);
+	} // P(a)=A, P(b)=B
+
+	public static v2d NI(double a, v2d A, double b, v2d B, double c, v2d C, double t) {
+		v2d P = NI(a, A, b, B, t);
+		v2d Q = NI(b, B, c, C, t);
+		return NI(a, P, c, Q, t);
+	} // P(a)=A, P(b)=B, P(c)=C
+
+	public static v2d NI(double a, v2d A, double b, v2d B, double c, v2d C, double d, v2d D, double t) {
+		v2d P = NI(a, A, b, B, c, C, t);
+		v2d Q = NI(b, B, c, C, d, D, t);
+		return NI(a, P, d, Q, t);
+	} // P(a)=A, P(b)=B, P(c)=C, P(d)=D
 }

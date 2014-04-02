@@ -1,13 +1,14 @@
 package edu.gatech.cc.view;
+
 import processing.core.PApplet;
 import edu.gatech.cc.geo.v2d;
-import edu.gatech.cc.model.Bezier2d;
+import edu.gatech.cc.model.Neville2d;
 
-public class PlanarStretch extends PApplet{
+public class NevilleStretch extends PApplet{
 	v2d[] C; 
 	float width = 1000; 
 	float height = 800; 
-	Bezier2d spine; 
+	Neville2d spine; 
 	public void setup() {
 		size((int) width, (int)height, P2D); 
 		C = new v2d[4]; 
@@ -15,7 +16,7 @@ public class PlanarStretch extends PApplet{
 		C[1] = new v2d(width/2-100, height/2); 
 		C[2] = new v2d(width/2+100, height/2); 
 		C[3] = new v2d(width/2+300, height/2); 
-		spine = new Bezier2d(C, 100); 
+		spine = new Neville2d(C, 100); 
 		spine.computeGrid();
 		//smooth(); 
 	}
@@ -31,9 +32,14 @@ public class PlanarStretch extends PApplet{
 	public void draw() {
 		smooth(); 
 		background(255); 
-		spine.show(this);
-		spine.showCtrl(this);
+		this.stroke(100); 
+		this.noFill(); 
 		spine.showGrid(this);
+		this.stroke(0, 0, 255);
+		this.fill(255, 0);
+		spine.show(this);
+		this.fill(0, 0, 255);
+		spine.showCtrl(this);
 	}
 	
 	public void showOriginal(){
