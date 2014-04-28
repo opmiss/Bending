@@ -3,7 +3,6 @@ import processing.core.PApplet;
 import edu.gatech.cc.geo.*;
 import edu.gatech.cc.model.Bezier2d;
 
-
 public class BezierStretch extends PApplet{
 	v2d[] C; 
 	float width = 1000; 
@@ -38,9 +37,8 @@ public class BezierStretch extends PApplet{
 		spine.showCtrl(this);
 		if (showColor) spine.showColorGrid(this);
 		else spine.showGrid(this);
-		color.showMap(this, 50);
+		//color.showMap(this, 50);
 	}
-	
 	public void keyPressed(){
 		if (key=='c') {
 			System.out.println("save a frame"); 

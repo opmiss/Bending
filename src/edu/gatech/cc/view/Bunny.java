@@ -19,11 +19,16 @@ public class Bunny extends PApplet {
 	  fill(255,255, 0); 
 	  this.noStroke(); 
 	  S0.showFront(this);
-	  box(200); 
-	  if (!keyPressed && mousePressed) {
-			view.E = view.E.rotate(PI * (float) (mouseX - pmouseX) / width, view.I, view.K, view.F);
-			view.E = view.E.rotate(-PI * (float) (mouseY - pmouseY) / width, view.J, view.K, view.F);
-		} // rotate E around F
+	 // box(200); 
+	  if (keyPressed && key=='r'&& mousePressed) {
+		  view.rotate(this);
+	   } // rotate E around F
+	  else if (keyPressed && key=='z' && mousePressed){
+		  view.zoom(this);
+	  }
+	  else if (keyPressed && key=='t' && mousePressed){
+		  view.translate(this);
+	  }
 	}
 	public void mousePressed() {
 	}
@@ -34,5 +39,6 @@ public class Bunny extends PApplet {
 	public void keyReleased() {
 	}
 	public void keyPressed() {
+		if (key=='f') for (int i=0; i<3; i++) S0 = S0.refine(); 
 	}
 }

@@ -21,6 +21,9 @@ public class v3d {
 	public static v3d vec(v3d p, v3d q){
 		return new v3d(q.x-p.x, q.y-p.y, q.z-p.z); 
 	}
+	public static v3d copy(v3d v){
+		return new v3d(v.x, v.y, v.z); 
+	}
 	public v3d set(double px, double py, double pz) {
 		x = px;
 		y = py;
@@ -85,7 +88,10 @@ public class v3d {
 	public double norm() {
 		return Math.sqrt(x*x + y*y + z*z);
 	};
-	public v3d normalize() {
+	public double square(){
+		return x*x + y*y + z*z;
+	}
+	public v3d makeUnit() {
 		double n = norm();
 		if (n > 0.000001) {
 			div(n);
@@ -174,6 +180,15 @@ public class v3d {
 	public static v3d U(v3d A, v3d B) {
 		return U(V(A, B));
 	}
+	
+	public v3d makeProject(v3d n){
+		//project to the plane with normal n
+		n = n.makeUnit(); 
+		double s= v3d.dot(this, n);
+		n = n.mul(s); 
+		return this.sub(n); 
+	}
+	
 	public static v3d cross(v3d U, v3d V) {
 		return V(U.y * V.z - U.z * V.y, U.z * V.x - U.x * V.z, U.x * V.y - U.y
 				* V.x);

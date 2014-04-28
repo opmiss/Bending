@@ -26,4 +26,18 @@ public class view {
 		 pa.directionalLight(255,255,255,(float)Li.x,(float)Li.y,(float)Li.z); // direction of light: behind and above the viewer
 		 pa.specular(255,255,0); pa.shininess(5);
 	}
+	public static void rotate(PApplet pa){
+		 view.E = view.E.rotate(PApplet.PI * (pa.mouseX - pa.pmouseX) / pa.width, view.I, view.K, view.F);
+		 view.E = view.E.rotate(-PApplet.PI * (pa.mouseY - pa.pmouseY) / pa.width, view.J, view.K, view.F);
+	}
+	public static void zoom(PApplet pa){
+		 view.E = (view.E).add( -(pa.mouseY - pa.pmouseY), view.K);
+	}
+	public static void translate(PApplet pa){
+		  view.E = (view.E).add( -(pa.mouseY-pa.pmouseY), view.J); 
+		  view.F = (view.F).add( -(pa.mouseY-pa.pmouseY), view.J);
+		  
+		  view.E = (view.E).add( -(pa.mouseX-pa.pmouseX), view.I); 
+		  view.F = (view.F).add( -(pa.mouseX-pa.pmouseX), view.I);
+	}
 }

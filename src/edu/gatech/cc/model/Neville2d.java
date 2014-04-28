@@ -143,5 +143,4 @@ public class Neville2d {
 			C[i].show(pa);
 		}
 	}
-
 }

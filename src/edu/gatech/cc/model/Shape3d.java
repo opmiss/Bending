@@ -5,7 +5,7 @@ import processing.core.PApplet;
 
 public class Shape3d {
 	// max sizes, counts, selected corners 
-	private int maxnv = 5000; // max number of vertices
+	private int maxnv = 10000; // max number of vertices
 	private int maxnt = maxnv * 2; // max number of triangles
 	private int nv = 0; // current number of vertices
 	private int nt = 0; // current number of triangles
@@ -417,12 +417,12 @@ public class Shape3d {
 			Nv[v(i)].add(Nt[t(i)]);
 		}
 		for (int i = 0; i < nv; i++) {
-			Nv[i].normalize();
+			Nv[i].makeUnit();
 		}
 	}
 	void normalizeTriNormals() {
 		for (int i = 0; i < nt; i++)
-			Nt[i].normalize();
+			Nt[i].makeUnit();
 	}
 	// ================= VOLUME====================================
 	public double volume() {
