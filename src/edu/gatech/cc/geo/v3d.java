@@ -1,11 +1,12 @@
 package edu.gatech.cc.geo;
+import edu.gatech.cc.model.Frame;
 import processing.core.PApplet;
 
 
 public class v3d {
-	double x;
-	double y;
-	double z;
+	public double x;
+	public double y;
+	public double z;
 	public v3d() { x=y=z=0; };
 	public v3d(double px, double py, double pz) {
 		x = px;
@@ -15,11 +16,17 @@ public class v3d {
 	public static v3d pt(double px, double py, double pz){
 		return new v3d(px, py, pz); 
 	}
+	public static v3d pt(v3d P){
+		return new v3d(P.x, P.y, P.z); 
+	}
 	public static v3d vec(double vx, double vy, double vz){
 		return new v3d(vx, vy, vz); 
 	}
 	public static v3d vec(v3d p, v3d q){
 		return new v3d(q.x-p.x, q.y-p.y, q.z-p.z); 
+	}
+	public static v3d vec(double u, v3d U, double v, v3d V, double w, v3d W){
+		return new v3d(u*U.x+v*V.x+w*W.x, u*U.y+v*V.y+w*W.y, u*U.z+v*V.z+w*W.z); 
 	}
 	public static v3d copy(v3d v){
 		return new v3d(v.x, v.y, v.z); 
@@ -126,24 +133,13 @@ public class v3d {
 		add(x * s + y * c - y, J);
 		return this;
 	};
-	public static v3d V(double x, double y, double z) {
-		return new v3d(x, y, z);
-	}; // make v3dtor (x,y,z)
+
 	public static v3d V(v3d V) {
 		return new v3d(V.x, V.y, V.z);
 	}; // make copy of v3dtor V
 	public static v3d A(v3d A, v3d B) {
 		return new v3d(A.x + B.x, A.y + B.y, A.z + B.z);
 	}; // A+B
-	public static v3d A(v3d U, double s, v3d V) {
-		return V(U.x + s * V.x, U.y + s * V.y, U.z + s * V.z);
-	}; // U+sV
-	public static v3d M(v3d U, v3d V) {
-		return V(U.x - V.x, U.y - V.y, U.z - V.z);
-	}; // U-V
-	v3d M(v3d V) {
-		return V(-V.x, -V.y, -V.z);
-	}; // -V
 	public static v3d mid(v3d A, v3d B) {
 		return new v3d((A.x + B.x) / 2.0f, (A.y + B.y) / 2.0f,
 				(A.z + B.z) / 2.0f);
@@ -173,7 +169,7 @@ public class v3d {
 	public static v3d U(v3d V) {
 		double n = V.norm();
 		if (n < 0.000001)
-			return V(0, 0, 0);
+			return vec(0, 0, 0);
 		else
 			return V(1.0f/n, V);
 	}; // V/||V||
@@ -190,7 +186,7 @@ public class v3d {
 	}
 	
 	public static v3d cross(v3d U, v3d V) {
-		return V(U.y * V.z - U.z * V.y, U.z * V.x - U.x * V.z, U.x * V.y - U.y
+		return vec(U.y * V.z - U.z * V.y, U.z * V.x - U.x * V.z, U.x * V.y - U.y
 				* V.x);
 	}; // UxV CROSS PRODUCT (normal to both)
 
@@ -212,17 +208,19 @@ public class v3d {
 		double dz = (Q.z-P.z);
 		return Math.sqrt(dx*dx+dy*dy+dz*dz); 
 	}
-	
+	@Override 
 	public String toString(){
 		return Double.toString(x) + "," + Double.toString(y) + "," + Double.toString(z);
 	}
-	
+	public void print(){
+		System.out.println(this.toString()); 
+	}
 	public static double area(v3d A, v3d B, v3d C) {
 		return (v3d.normal(A, B, C)).norm() / 2;
 	}; // area of triangle
 
 	v3d R(v3d V) {
-		return V(-V.y, V.x, V.z);
+		return vec(-V.y, V.x, V.z);
 	} // rotated 90 degrees in XY plane
 	
 	public void vert(PApplet pa){
@@ -242,24 +240,48 @@ public class v3d {
 	}; // Rotated V by a parallel to plane (I,J)
 	
 	
-	public static v3d interpolate(v3d A, v3d B, float s){
+	public static v3d interpolate(v3d A, v3d B, double s){
 		return new v3d(A.x +s*(B.x-A.x), A.y +s*(B.y-A.y), A.z +s*(B.z-A.z)); 
 	}
 	
+	public v3d transform(Frame f, Frame g){
+		v3d V = v3d.vec(f.getO(), this); 
+		double n = v3d.dot(V, f.getN());
+		double b = v3d.dot(V, f.getB());
+		double t = v3d.dot(V, f.getT());
+		V = v3d.vec(n, g.getN(), b, g.getB(), t, g.getT()); 
+		this.set(g.getO()); 
+		this.add(V); 
+		return this; 
+	}
+
 	// Interpolation non-uniform (Neville's algorithm)
-	public static v3d NI(float a, v3d A, float b, v3d B, float t) {
+	public static v3d NI(double a, v3d A, double b, v3d B, double t) {
 		return interpolate(A, B, (t - a) / (b - a));
 	} // P(a)=A, P(b)=B
 
-	public static v3d NI(float a, v3d A, float b, v3d B, float c, v3d C, float t) {
+	public static v3d NI(double a, v3d A, double b, v3d B, double c, v3d C, double t) {
 		v3d P = NI(a, A, b, B, t);
 		v3d Q = NI(b, B, c, C, t);
 		return NI(a, P, c, Q, t);
 	} // P(a)=A, P(b)=B, P(c)=C
 
-	public static v3d NI(float a, v3d A, float b, v3d B, float c, v3d C, float d, v3d D, float t) {
+	public static v3d NI(double a, v3d A, double b, v3d B, double c, v3d C, double d, v3d D, double t) {
 		v3d P = NI(a, A, b, B, c, C, t);
 		v3d Q = NI(b, B, c, C, d, D, t);
 		return NI(a, P, d, Q, t);
 	} // P(a)=A, P(b)=B, P(c)=C, P(d)=D
+	
+	public void show(PApplet pa){
+		pa.pushMatrix();
+		pa.translate((float)x, (float)y, (float)z);
+		pa.sphere(20);
+		pa.popMatrix(); 
+	}
+	public void show(int r, PApplet pa){
+		pa.pushMatrix();
+		pa.translate((float)x, (float)y, (float)z);
+		pa.sphere(r);
+		pa.popMatrix(); 
+	}
 }

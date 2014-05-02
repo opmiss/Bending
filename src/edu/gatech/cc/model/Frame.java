@@ -2,10 +2,10 @@ package edu.gatech.cc.model;
 import edu.gatech.cc.geo.*;
 import processing.core.*;
 public class Frame {
-		v3d T; //tangent 
+		private v3d T; //tangent 
 		private v3d N; //normal
-		v3d B; //binormal
-		v3d O; //frame center 
+		private v3d B; //binormal
+		private v3d O; //frame center 
 		private Frame(v3d t, v3d n, v3d b, v3d o){
 			T = v3d.U(t); 
 			setN(n.makeUnit()); 
@@ -71,7 +71,9 @@ public class Frame {
 			double da = Math.PI*2/num;
 			double sa = 0; 
 			for (int i=0; i<num; i++){
-				ret[i] = O.add(r*Math.cos(sa), getN(), r*Math.sin(sa), B); 
+				ret[i] = v3d.pt(O); 
+				ret[i] = ret[i].add(r*Math.cos(sa), getN(), r*Math.sin(sa), B); 
+				//ret[i].print(); 
 				sa+=da; 
 			}
 			return ret; 
@@ -82,9 +84,13 @@ public class Frame {
 		public v3d getB(){
 			return B; 
 		}
+		public v3d getO(){
+			return O; 
+		}
 		public void setN(v3d n) {
 			N = n;
 		}
-	
-
+		public v3d getT(){
+			return T; 
+		}
 }

@@ -13,7 +13,7 @@ public class Shape3d {
 	private double vol = 0, surf = 0, edgeLength = 0; // vol and surface and average edge length
 	
 	// boundingbox
-	public v3d Cbox, Lbox, Hbox; // min-max box center
+	public v3d Wbox, Cbox, Lbox, Hbox; // min-max box center
 	public double rbox = 1000; // half-diagonal of enclosing box
 	private double r = 4; // detail size: radius of spheres for displaying vertices and of gaps between triangles when showing edges
 
@@ -87,6 +87,36 @@ public class Shape3d {
 	void setr() {
 		r = averageEdgeLength() / 10;
 	}
+	
+	public Shape3d computeBox() { // computes center Cbox and half-diagonal Rbox of minimax box
+		Lbox = v3d.pt(G[0]);
+		Hbox = v3d.pt(G[0]);
+		Wbox = new v3d(); 
+		for (int i = 1; i < nv; i++) {
+			Lbox.x = Math.min(Lbox.x, G[i].x);
+			Lbox.y = Math.min(Lbox.y, G[i].y);
+			Lbox.z = Math.min(Lbox.z, G[i].z);
+			Hbox.x = Math.max(Hbox.x, G[i].x);
+			Hbox.y = Math.max(Hbox.y, G[i].y);
+			Hbox.z = Math.max(Hbox.z, G[i].z);
+			Wbox.x += G[i].x; 
+			Wbox.y += G[i].y; 
+			Wbox.z += G[i].z; 
+		}
+		Wbox.div(nv); 
+		Cbox.set(v3d.mid(Lbox, Hbox));
+		rbox = v3d.dis(Cbox, Hbox);
+		double el = averageEdgeLength() / 10;
+		if (el == 0)
+			r = rbox/100;
+		else
+			r = Math.min(el, rbox / 100);
+		System.out.println("r=" + r + ", "+"rbox="+rbox);
+		view.F.set(Cbox);
+		view.E.set(view.F); 
+		view.E.add( rbox * 2, view.K); 
+		return this;
+	}
 
 	public Shape3d resetMarkers() { 
 		for (int i = 0; i < nv; i++)
@@ -103,11 +133,35 @@ public class Shape3d {
 		v3d Q = g(n(c));
 		v3d P = g(f);
 		v3d QP = v3d.V(Q, P);
-		v3d V = v3d.A(QP, -v3d.dot(QP, T), T);
+		v3d V = QP.add(-v3d.dot(QP, T), T);
 		float a = PApplet.atan2((float)v3d.dot(V, N), (float)v3d.dot(V, B));
 		if (a < 0)
 			a += PApplet.TWO_PI;
 		return a;
+	}
+	
+	public int[] P; 
+	
+	public void register(Curve3d spine){
+		P = new int[nv]; 
+		double dis, min_dis; 
+		for (int i=0; i<nv; i++){
+			min_dis = v3d.dis(G[i], spine.P[0]);
+			for (int j=1; j<spine.num; j++){
+				dis = v3d.dis(G[i], spine.P[j]); 
+				if (dis < min_dis){
+					min_dis = dis; 
+					P[i] = j; 
+				}
+			}
+		}
+	}
+	
+	public Shape3d transform(Curve3d C0, Curve3d C1){
+		for (int i=0; i<nv; i++){
+			G[i].transform(C0.pFrame[P[i]], C1.pFrame[P[i]]); 
+		}
+		return this; 
 	}
 
 	int addVertex(v3d P) {

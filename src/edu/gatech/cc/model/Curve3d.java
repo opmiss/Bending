@@ -1,29 +1,35 @@
 package edu.gatech.cc.model;
-
 import processing.core.PApplet;
 import edu.gatech.cc.geo.v3d;
+import edu.gatech.cc.geo.view;
 
 public class Curve3d {
-	v3d[] C; //control points 
-	v3d[] P; //curve points 
-	Frame[] F; //frames along the curve
-	int num; 
 	
+	public v3d[] C; //control points 
+	v3d[] P; //curve points 
+	int num; 
+	double step; 
+
 	public Curve3d(v3d[] Ctrl, int N){
 		C = Ctrl; 
-		double d = 1.0/N;
+		step = 1.0/N;
 		num = N+1; 
 		P = new v3d[num]; 
-		fillPts(d); 
+		fillPts(step); 
+		computeFrame();
+		tiles = new Tiles(this, 6, 30, ShowMode.CHECKER); 
 	}
-	
 	static final double dl = 6; 
 	static final double two_dl = 12; 
-	
-	public void fillPts(double d){
+	public void compute(){
+		fillPts(step);
+		computeFrame();
+		tiles.createTiles();
+	}
+	void fillPts(double d){
 		int i=0; 
 		for (double s=0; s<=1.0001; s+=d){ 
-		//	P[i++] = v3d.NI(0, C[0], 1.0/3, C[1], 2.0/3, C[2], 1.0, C[3], s); 
+			P[i++] = v3d.NI(0, C[0], 1.0/3, C[1], 2.0/3, C[2], 1.0, C[3], s); 
 		}
 		num=i; 
 	}
@@ -40,14 +46,13 @@ public class Curve3d {
 	public void drop(){
 		pid=-1; 
 	}
-
-	public void move(v3d M){
+	
+	public void move(int i, PApplet pa){
+		C[i] = C[i].add((pa.mouseY - pa.pmouseY)*0.5, view.J); 
+		C[i] = C[i].add((pa.mouseX - pa.pmouseX)*0.5, view.I);
+		compute();
 	}
-	// curvature, normal
-	double[] K; // curvature 
-	v3d[] N; // normal
-	double[] L; // local stretch, ratio of speed 
-
+	
 	int n(int i) {
 		return (i >= num - 1)?(num-1):(i+1);
 	}
@@ -61,30 +66,50 @@ public class Curve3d {
 		if (i==num-1) return v3d.dis(P[num-1], P[p(num-1)])/dl;
 		return v3d.dis(P[p(i)], P[i]) + v3d.dis(P[i], P[n(i)])/two_dl;
 	}
-
+	
 	v3d tangent(int i) {
 		v3d p = v3d.vec(P[p(i)], P[n(i)]);
 		return p; 
 	}
-
-	/*v3d normal(int i) {
-		//TODO
-	}*/
-
-	/*double curvature(int i) {
-		if (i==0) return curvature(1);
-		if (i==num-1) return curvature(num-2); 
-		return 1.0 /-v3d.radius(P[p(i)], P[i], P[n(i)]);
-	}*/
 	
-	public void show(PApplet pa){
-		pa.beginShape();
-		for (int i=0; i<num; i++){
-			P[i].vert(pa);
+	/*-------------------------curve parameters---------------------------*/
+	Frame[] fFrame; 
+	Frame[] pFrame; 
+	
+	Frame getPFrame(int i){
+		return pFrame[i]; 
+	}
+	
+	Frame getFFrame(int i){
+		return fFrame[i]; 
+	}
+	
+	public void computeFrame(){
+		pFrame = new Frame[num]; 
+		pFrame[0] = Frame.first(P[0], P[1], P[2]);
+		for (int i=1; i<num-1; i++){
+			pFrame[i] = Frame.median(pFrame[i-1], P[i-1], P[i], P[i+1]); 
 		}
-		pa.endShape(); 
+		pFrame[num-1] = Frame.last(pFrame[num-2], P[num-3], P[num-2], P[num-1]);  
+		fFrame = new Frame[num]; 
+		fFrame[0] = Frame.first(P[0], P[1], P[2]);
+		for (int i=1; i<num-1; i++){
+			fFrame[i] = Frame.Frenet(P[i-1], P[i], P[i+1]); 
+		}
+		fFrame[num-1] = Frame.last(fFrame[num-2], P[num-3], P[num-2], P[num-1]); 
+	}
+
+	
+	/*----------------------------Display--------------------------------*/
+	Tiles tiles; 
+	public void show(PApplet pa){
+		tiles.show(pa);
+		for (int i=0; i<4; i++){
+			C[i].show(pa);
+		}
 	}
 	
 	public void showCtrl(PApplet pa){
+		
 	}
 }
