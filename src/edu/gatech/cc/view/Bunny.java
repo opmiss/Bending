@@ -21,6 +21,7 @@ public class Bunny extends PApplet {
 		P[2] = v3d.pt(S0.Wbox); P[2].add(S0.rbox*0.4, view.I); 
 		P[3] = v3d.pt(S0.Wbox); P[3].add(S0.rbox*1.2, view.I); 
 		C0 = new Curve3d(P, 100); 
+		S0.register(C0);
 	}
 	public void draw() {  
 	  background(255);
@@ -43,25 +44,34 @@ public class Bunny extends PApplet {
 	public void mouseDragged(){
 		if (keyPressed && key=='1'){ 
 			C0.move(0, this);
+			S0.transform(C0); 
 		}
 		else if (keyPressed && key=='2'){
 			C0.move(1, this);
+			S0.transform(C0); 
 		}
 		else if (keyPressed && key=='3'){
 			C0.move(2, this);
+			S0.transform(C0); 
 		}
 		else if (keyPressed && key=='4'){	
 			C0.move(3, this);
+			S0.transform(C0); 
 		}
 	}
 	public void mousePressed() {
-	
+		
 	}
 	public void mouseReleased() {
+		
 	}
 	public void keyReleased() {
+		
 	}
 	public void keyPressed() {
-		if (key=='f') for (int i=0; i<3; i++) S0 = S0.refine(); 
+		if (key=='f') { 
+			for (int i=0; i<3; i++) S0 = S0.refine(); 
+			S0.register(C0);
+		}
 	}
 }

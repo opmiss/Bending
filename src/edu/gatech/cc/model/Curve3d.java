@@ -4,12 +4,10 @@ import edu.gatech.cc.geo.v3d;
 import edu.gatech.cc.geo.view;
 
 public class Curve3d {
-	
 	public v3d[] C; //control points 
 	v3d[] P; //curve points 
 	int num; 
 	double step; 
-
 	public Curve3d(v3d[] Ctrl, int N){
 		C = Ctrl; 
 		step = 1.0/N;
@@ -17,7 +15,7 @@ public class Curve3d {
 		P = new v3d[num]; 
 		fillPts(step); 
 		computeFrame();
-		tiles = new Tiles(this, 6, 30, ShowMode.CHECKER); 
+		tiles = new Tiles(this, 4, 10, ShowMode.STRIP); 
 	}
 	static final double dl = 6; 
 	static final double two_dl = 12; 
@@ -72,16 +70,19 @@ public class Curve3d {
 		return p; 
 	}
 	
-	/*-------------------------curve parameters---------------------------*/
-	Frame[] fFrame; 
+	/*------------------------curve parameters---------------------------*/
+	Frame[] pFrame0;
 	Frame[] pFrame; 
+	
+	public void saveFrames(){
+		pFrame0 = new Frame[num]; 
+		for (int i=0;i<num; i++){ 
+			pFrame0[i] = new Frame(pFrame[i]); 
+		}
+	}
 	
 	Frame getPFrame(int i){
 		return pFrame[i]; 
-	}
-	
-	Frame getFFrame(int i){
-		return fFrame[i]; 
 	}
 	
 	public void computeFrame(){
@@ -91,22 +92,12 @@ public class Curve3d {
 			pFrame[i] = Frame.median(pFrame[i-1], P[i-1], P[i], P[i+1]); 
 		}
 		pFrame[num-1] = Frame.last(pFrame[num-2], P[num-3], P[num-2], P[num-1]);  
-		fFrame = new Frame[num]; 
-		fFrame[0] = Frame.first(P[0], P[1], P[2]);
-		for (int i=1; i<num-1; i++){
-			fFrame[i] = Frame.Frenet(P[i-1], P[i], P[i+1]); 
-		}
-		fFrame[num-1] = Frame.last(fFrame[num-2], P[num-3], P[num-2], P[num-1]); 
 	}
 
-	
 	/*----------------------------Display--------------------------------*/
 	Tiles tiles; 
 	public void show(PApplet pa){
 		tiles.show(pa);
-		for (int i=0; i<4; i++){
-			C[i].show(pa);
-		}
 	}
 	
 	public void showCtrl(PApplet pa){

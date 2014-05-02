@@ -23,6 +23,13 @@ public class Shape3d {
 	
 	// primary tables
 	v3d[] G = new v3d[maxnv]; // geometry table (vertices)
+	v3d[] G0 = new v3d[maxnv]; 
+	public void saveVertices(){
+		G0 = new v3d[nv];
+		for (int i=0; i<nv; i++){
+			G0[i] = v3d.pt(G[i]); 
+		}
+	}
 	int[] V = new int[3 * maxnt]; // V table (triangle/vertex indices)
 	int[] O = new int[3 * maxnt]; // O table (opposite corner indices)
 	
@@ -139,9 +146,7 @@ public class Shape3d {
 			a += PApplet.TWO_PI;
 		return a;
 	}
-	
 	public int[] P; 
-	
 	public void register(Curve3d spine){
 		P = new int[nv]; 
 		double dis, min_dis; 
@@ -155,11 +160,13 @@ public class Shape3d {
 				}
 			}
 		}
+		spine.saveFrames();
+		this.saveVertices();
 	}
 	
-	public Shape3d transform(Curve3d C0, Curve3d C1){
+	public Shape3d transform(Curve3d C){
 		for (int i=0; i<nv; i++){
-			G[i].transform(C0.pFrame[P[i]], C1.pFrame[P[i]]); 
+			G[i].transform(G0[i], C.pFrame0[P[i]], C.pFrame[P[i]]); 
 		}
 		return this; 
 	}

@@ -133,8 +133,7 @@ public class v3d {
 		add(x * s + y * c - y, J);
 		return this;
 	};
-
-	public static v3d V(v3d V) {
+	public static v3d vec(v3d V) {
 		return new v3d(V.x, V.y, V.z);
 	}; // make copy of v3dtor V
 	public static v3d A(v3d A, v3d B) {
@@ -244,11 +243,12 @@ public class v3d {
 		return new v3d(A.x +s*(B.x-A.x), A.y +s*(B.y-A.y), A.z +s*(B.z-A.z)); 
 	}
 	
-	public v3d transform(Frame f, Frame g){
-		v3d V = v3d.vec(f.getO(), this); 
+	public v3d transform(v3d v, Frame f, Frame g){
+		v3d V = v3d.vec(f.getO(), v); 
 		double n = v3d.dot(V, f.getN());
 		double b = v3d.dot(V, f.getB());
 		double t = v3d.dot(V, f.getT());
+		//System.out.println(n+", "+b+", "+t); 
 		V = v3d.vec(n, g.getN(), b, g.getB(), t, g.getT()); 
 		this.set(g.getO()); 
 		this.add(V); 

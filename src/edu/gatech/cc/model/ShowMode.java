@@ -32,7 +32,7 @@ public enum ShowMode {
 				//System.out.println(i+","+ni+","+nj+","+j); 
 			}
 		}*/
-		
+		pa.beginShape(PApplet.QUADS); 
 		for (int i=0; i<np-1; i++){
 			int ni = i+1;
 			for (int j=0; j<ns; j++){
@@ -40,20 +40,13 @@ public enum ShowMode {
 				if (j==ns-1) nj =0; 
 				if (i%2==j%2) color.fill(Color[0], pa);
 				else color.fill(Color[1], pa); 
-			/*	pa.beginShape();
 				surf[i][j].vert(pa); 
 				surf[ni][j].vert(pa);  
 				surf[ni][nj].vert(pa); 
 				surf[i][nj].vert(pa);
-				pa.endShape(PApplet.CLOSE);*/
-				surf[i][j].show(1, pa);
-				surf[ni][j].show(1, pa);  
-				surf[ni][nj].show(1, pa); 
-				surf[i][nj].show(1, pa);
-				//System.out.println(i+","+ni+","+nj+","+j); 
 			}
 		}
-	
+		pa.endShape(); 
 	}
 	
 	private void showStripe(v3d[][] surf, int np, int ns, PApplet pa){
