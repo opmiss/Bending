@@ -248,6 +248,8 @@ public class v3d {
 		double n = v3d.dot(V, f.getN());
 		double b = v3d.dot(V, f.getB());
 		double t = v3d.dot(V, f.getT());
+		n = n*f.getL()/g.getL(); 
+		b = b*f.getL()/g.getL(); 
 		//System.out.println(n+", "+b+", "+t); 
 		V = v3d.vec(n, g.getN(), b, g.getB(), t, g.getT()); 
 		this.set(g.getO()); 

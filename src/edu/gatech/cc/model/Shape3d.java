@@ -166,7 +166,7 @@ public class Shape3d {
 	
 	public Shape3d transform(Curve3d C){
 		for (int i=0; i<nv; i++){
-			G[i].transform(G0[i], C.pFrame0[P[i]], C.pFrame[P[i]]); 
+			G[i].transform(G0[i], C.frame0[P[i]], C.frame[P[i]]); 
 		}
 		return this; 
 	}

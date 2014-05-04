@@ -15,7 +15,7 @@ public class Curve3d {
 		P = new v3d[num]; 
 		fillPts(step); 
 		computeFrame();
-		tiles = new Tiles(this, 4, 10, ShowMode.STRIP); 
+		tiles = new Tiles(this, 4, 10, ShowMode.CHECKER); 
 	}
 	static final double dl = 6; 
 	static final double two_dl = 12; 
@@ -71,27 +71,29 @@ public class Curve3d {
 	}
 	
 	/*------------------------curve parameters---------------------------*/
-	Frame[] pFrame0;
-	Frame[] pFrame; 
+	Frame[] frame0;
+	Frame[] frame; 
+	
+	
 	
 	public void saveFrames(){
-		pFrame0 = new Frame[num]; 
+		frame0 = new Frame[num]; 
 		for (int i=0;i<num; i++){ 
-			pFrame0[i] = new Frame(pFrame[i]); 
+			frame0[i] = new Frame(frame[i]); 
 		}
 	}
 	
 	Frame getPFrame(int i){
-		return pFrame[i]; 
+		return frame[i]; 
 	}
 	
 	public void computeFrame(){
-		pFrame = new Frame[num]; 
-		pFrame[0] = Frame.first(P[0], P[1], P[2]);
+		frame = new Frame[num]; 
+		frame[0] = Frame.first(P[0], P[1], P[2]);
 		for (int i=1; i<num-1; i++){
-			pFrame[i] = Frame.median(pFrame[i-1], P[i-1], P[i], P[i+1]); 
+			frame[i] = Frame.median(frame[i-1], P[i-1], P[i], P[i+1]); 
 		}
-		pFrame[num-1] = Frame.last(pFrame[num-2], P[num-3], P[num-2], P[num-1]);  
+		frame[num-1] = Frame.last(frame[num-2], P[num-3], P[num-2], P[num-1]);  
 	}
 
 	/*----------------------------Display--------------------------------*/
