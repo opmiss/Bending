@@ -1,5 +1,6 @@
 package edu.gatech.cc.geo;
 import edu.gatech.cc.model.Frame;
+
 import processing.core.PApplet;
 
 
@@ -214,9 +215,42 @@ public class v3d {
 	public void print(){
 		System.out.println(this.toString()); 
 	}
+	public void print(String s){
+		System.out.println(s+":"+this.toString()); 
+	}
 	public static double area(v3d A, v3d B, v3d C) {
 		return (v3d.normal(A, B, C)).norm() / 2;
 	}; // area of triangle
+	
+	public v2d toScreen(PApplet pa){
+	/*	double ef = v3d.dis(view.E, view.F); 
+		v3d EP = v3d.vec(view.E, this);
+		double epf = v3d.dot(EP, view.K);
+		//compute EPf
+		v3d EPf = v3d.vec(view.K); 
+		EPf = EPf.mul(epf); 
+		//compute Pf
+		v3d Pf = v3d.pt(view.E); 
+		Pf = Pf.add(EPf); 
+		
+		v3d PPf = v3d.vec(Pf, this); 
+		double x = v3d.dot(PPf, view.I);
+		double y = v3d.dot(PPf, view.J);
+		
+		double s1 = ef/Math.abs(epf);*/
+		
+		v3d PF = v3d.vec(view.F, this); 
+		double x = v3d.dot(PF, view.I); 
+		double y = v3d.dot(PF, view.J); 
+		
+		double s = 59.0/49.0; 
+		//System.out.println("s1:"+s1+", "+"s2:"+s2); 
+		 
+		x = x*s+pa.width/2; 
+		y = y*s+pa.height/2;
+		
+		return new v2d(x, y); 
+	}
 
 	v3d R(v3d V) {
 		return vec(-V.y, V.x, V.z);

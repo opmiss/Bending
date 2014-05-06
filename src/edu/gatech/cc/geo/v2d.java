@@ -212,6 +212,9 @@ public class v2d {
 	public String toString(){
 		return Double.toString(x)+", "+Double.toString(y); 
 	}
+	public void print(){
+		System.out.println(this.toString()); 
+	}
 	
 	public v2d map(v2d O0, double R0, v2d O1, double R1){
 		//TODO: dot product to fix the sign 

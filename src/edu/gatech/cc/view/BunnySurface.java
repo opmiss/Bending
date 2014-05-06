@@ -1,5 +1,4 @@
 package edu.gatech.cc.view;
-
 import processing.core.PApplet;
 import edu.gatech.cc.geo.v3d;
 import edu.gatech.cc.geo.view;
@@ -21,9 +20,10 @@ public class BunnySurface extends PApplet{
 			for (int j=0; j<4; j++){
 				P[i][j] = v3d.pt(S0.Wbox);
 				P[i][j].add((-0.9+i*0.6)*S0.rbox, view.J, (-0.9+j*0.6)*S0.rbox, view.I); 
+				P[i][j].print(i+", "+j); P[i][j].toScreen(this).print(); 
 			}
 		}
-		C0 = new Surface(P, 15); 
+		C0 = new Surface(P, 24); 
 		//S0.register(C0);
 	}
 	public void draw() {  
@@ -32,8 +32,7 @@ public class BunnySurface extends PApplet{
 	  fill(255,255, 0); 
 	  this.noStroke(); 
 	  S0.showFront(this);
-	  this.stroke(50);
-	  fill(150, 100); 
+	  
 	  C0.show(this);
 	 // this.sphere(30);
 	  if (keyPressed && key=='r'&& mousePressed) {
@@ -47,28 +46,13 @@ public class BunnySurface extends PApplet{
 	  }
 	}
 	public void mouseDragged(){
-		if (keyPressed && key=='1'){ 
-			C0.move(0, this);
-			//S0.transform(C0); 
-		}
-		else if (keyPressed && key=='2'){
-			C0.move(1, this);
-			//S0.transform(C0); 
-		}
-		else if (keyPressed && key=='3'){
-			C0.move(2, this);
-			//S0.transform(C0); 
-		}
-		else if (keyPressed && key=='4'){	
-			C0.move(3, this);
-			//S0.transform(C0); 
-		}
+		C0.move(this);
 	}
 	public void mousePressed() {
-		
+		C0.pick(this);
 	}
 	public void mouseReleased() {
-		
+		C0.drop(); 
 	}
 	public void keyReleased() {
 		
