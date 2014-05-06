@@ -18,15 +18,19 @@ public class Surface {
 	}
 	static final double dl = 6; 
 	static final double two_dl = 12; 
-	public void compute(){
-		fillPts(step);
-	}
+	
 	void fillPts(double d){
-	/*	int i=0; 
+		int i=0, j=0; 
+		v3d[] T = new v3d[4]; 
 		for (double s=0; s<=1.0001; s+=d){ 
-			P[i++] = v3d.NI(0, C[0], 1.0/3, C[1], 2.0/3, C[2], 1.0, C[3], s); 
+			for (int k=0; k<4; k++) T[k] = v3d.NI(0, C[k][0], 1.0/3, C[k][1], 2.0/3, C[k][2], 1.0, C[k][3],s); 
+			for (double t=0; t<=1.0001; t+=d){
+				P[i][j++] = v3d.NI(0, T[0], 1.0/3, T[1], 2.0/3, T[2], 1.0, T[3], t); 
+				P[i][j-1].print(); 
+			}
+			i++; j=0;
 		}
-		num=i; */
+		num=i; 
 	}
 	int pid = -1; 
 	public void pick(){
@@ -52,16 +56,36 @@ public class Surface {
 		//TODO 
 		return null; 
 	}
+	
 	double area(int i, int j) {
 		//TODO 
 		return 0; 
 	}
+	
 	double gaussian(int i, int j) { //gaussian curvature
 		// TODO
 		return 0; 
 	}
+	
 	double mean(int i, int j){ //mean curvature 
 		//TODO
 		return 0; 
 	}
+	
+	/*----------display--------------*/
+	
+	public void show(PApplet pa){
+		pa.beginShape(PApplet.QUADS); 
+		for (int i=0; i<num-1; i++){
+			for (int j=0; j<num-1; j++){
+			
+				P[i][j].vert(pa); 
+				P[i][j+1].vert(pa);
+				P[i+1][j+1].vert(pa);
+				P[i+1][j].vert(pa);
+			}
+		}
+		pa.endShape(); 
+	}
+	
 }
