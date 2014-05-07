@@ -1,6 +1,6 @@
 package edu.gatech.cc.geo;
 import edu.gatech.cc.model.Frame;
-
+import edu.gatech.cc.model.Normal;
 import processing.core.PApplet;
 
 
@@ -272,7 +272,6 @@ public class v3d {
 		return A(V, V(x * c - x - y * s, I, x * s + y * c - y, J));
 	}; // Rotated V by a parallel to plane (I,J)
 	
-	
 	public static v3d interpolate(v3d A, v3d B, double s){
 		return new v3d(A.x +s*(B.x-A.x), A.y +s*(B.y-A.y), A.z +s*(B.z-A.z)); 
 	}
@@ -288,6 +287,11 @@ public class v3d {
 		V = v3d.vec(n, g.getN(), b, g.getB(), t, g.getT()); 
 		this.set(g.getO()); 
 		this.add(V); 
+		return this; 
+	}
+	
+	public v3d transform(v3d v, Normal n, Normal m){
+		//TODO
 		return this; 
 	}
 

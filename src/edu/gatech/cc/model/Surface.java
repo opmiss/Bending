@@ -65,8 +65,15 @@ public class Surface {
 		return null; 
 	}
 	double area(int i, int j) {
-		//TODO 
-		return 0; 
+		double area = v3d.area(P[p(i)][j], P[i][p(j)], P[i][j]) +
+		v3d.area(P[p(i)][j], P[i][n(j)], P[i][j]) +
+		v3d.area(P[n(i)][j], P[i][p(j)], P[i][j]) +
+		v3d.area(P[n(i)][j], P[i][n(j)], P[i][j]);
+		int scale=1; 
+		if (i == num-1 || i==0) scale *=2; 
+		if (j == num-1 || j==0) scale *=2; 
+		area *=scale; 
+		return area; 
 	}
 	double gaussian(int i, int j) { //gaussian curvature
 		// TODO
@@ -75,6 +82,11 @@ public class Surface {
 	double mean(int i, int j){ //mean curvature 
 		//TODO
 		return 0; 
+	}
+	Normal[][] normal0;
+	Normal[][] normal; 
+	public void saveNormals(){
+		//TODO
 	}
 	/*----------display--------------*/
 	

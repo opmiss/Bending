@@ -146,9 +146,11 @@ public class Shape3d {
 			a += PApplet.TWO_PI;
 		return a;
 	}
-	public int[] P; 
+	
+	/*----------------------registration and transformation-----------------------*/
+	public int[] P_c; 
 	public void register(Curve3d spine){
-		P = new int[nv]; 
+		P_c = new int[nv]; 
 		double dis, min_dis; 
 		for (int i=0; i<nv; i++){
 			min_dis = v3d.dis(G[i], spine.P[0]);
@@ -156,20 +158,46 @@ public class Shape3d {
 				dis = v3d.dis(G[i], spine.P[j]); 
 				if (dis < min_dis){
 					min_dis = dis; 
-					P[i] = j; 
+					P_c[i] = j; 
 				}
 			}
 		}
 		spine.saveFrames();
 		this.saveVertices();
 	}
-	
+	public int[][] P_s; 
+	public void register(Surface spine){
+		P_s = new int[nv][2];
+		double dis, min_dis; 
+		for (int i=0; i<nv; i++){
+			min_dis = v3d.dis(G[i], spine.P[0][0]); 
+			for (int j=0; j<spine.num; j++){
+				for (int k=0; k<spine.num; k++){
+					dis = v3d.dis(G[i], spine.P[j][k]); 
+					if (dis < min_dis){
+						min_dis = dis; 
+						P_s[i][0] = j; 
+						P_s[i][1] = k; 
+					}
+				}
+			}
+		}
+		spine.saveNormals();
+		this.saveVertices(); 
+	}
 	public Shape3d transform(Curve3d C){
 		for (int i=0; i<nv; i++){
-			G[i].transform(G0[i], C.frame0[P[i]], C.frame[P[i]]); 
+			G[i].transform(G0[i], C.frame0[P_c[i]], C.frame[P_c[i]]); 
 		}
 		return this; 
 	}
+	public Shape3d transform(Surface C){
+		for (int i=0; i<nv; i++){
+			G[i].transform(G0[i], C.normal0[P_s[i][0]][P_s[i][1]], C.normal[P_s[i][0]][P_s[i][1]]); 
+		}
+		return this; 
+	}
+	/*-----------------------------------------------------------------------------*/
 
 	int addVertex(v3d P) {
 		G[nv].set(P);

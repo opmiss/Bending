@@ -1,5 +1,4 @@
 package edu.gatech.cc.geo;
-import edu.gatech.cc.model.Arc2d;
 import processing.core.PApplet;
 
 public class v2d {
