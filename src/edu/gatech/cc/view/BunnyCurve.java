@@ -22,6 +22,7 @@ public class BunnyCurve extends PApplet {
 		P[3] = v3d.pt(S0.Wbox); P[3].add(S0.rbox*1.2, view.I); 
 		C0 = new Curve3d(P, 100); 
 		S0.register(C0);
+		textAlign(PApplet.LEFT, PApplet.TOP);
 	}
 	public void draw() {  
 	  background(255);
@@ -40,6 +41,14 @@ public class BunnyCurve extends PApplet {
 	  else if (keyPressed && key=='t' && mousePressed){
 		  view.translate(this);
 	  }
+	  //
+	  camera(); 
+	  scribe(); 
+	}
+	public void scribe(){
+		this.textSize(32);
+		this.fill(0);
+		this.text("vol error: "+S0.volError(), 10, 10);
 	}
 	public void mouseDragged(){
 		if (keyPressed && key=='1'){ 

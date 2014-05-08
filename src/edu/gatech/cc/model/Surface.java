@@ -8,7 +8,6 @@ import edu.gatech.cc.geo.view;
 public class Surface {
 	public v3d[][] C; //control points 
 	public v3d[][] P; //surface points 
-	
 	int num; 
 	double step; 
 	public Surface(v3d[][] Ctrl, int N){
@@ -17,6 +16,9 @@ public class Surface {
 		num = N+1; 
 		P = new v3d[num][num]; 
 		fillPts(step); 
+		frame = new SurfaceFrame[num][num]; 
+		frame0 = new SurfaceFrame[num][num]; 
+		computeFrame(); 
 	}
 	static final double dl = 6; 
 	static final double two_dl = 12; 
@@ -53,6 +55,7 @@ public class Surface {
 		C[pi][pj] = (C[pi][pj]).add( (pa.mouseY - pa.pmouseY), view.J);
 		C[pi][pj] = (C[pi][pj]).add( (pa.mouseX - pa.pmouseX), view.I); 
 		this.fillPts(step);
+		this.computeFrame(); 
 	}
 	int n(int i) {
 		return (i >= num - 1)?(num-1):(i+1);
@@ -61,8 +64,27 @@ public class Surface {
 		return (i <= 0)?0:(i-1); 
 	}
 	v3d normal(int i, int j){
-		//TODO 
-		return null; 
+		return v3d.cross(T1(i, j), T2(i, j)).makeUnit(); 
+	}
+	double l1(int i, int j){
+		double l = v3d.dis(P[p(i)][j], P[n(i)][j]); 
+		if (i==0 || i==num-1) l*=2; 
+		return l; 
+	}
+	double l2(int i, int j){
+		double l = v3d.dis(P[i][p(j)], P[i][n(j)]); 
+		if (j==0 || j==num-1) l*=2; 
+		return l; 
+	}
+	v3d T1(int i, int j){
+		v3d t = v3d.vec(P[p(i)][j], P[n(i)][j]); 
+		t = t.makeUnit(); 
+		return t; 
+	}
+	v3d T2(int i, int j){
+		v3d t = v3d.vec(P[i][p(j)], P[i][n(j)]);
+		t = t.makeUnit(); 
+		return t; 
 	}
 	double area(int i, int j) {
 		double area = v3d.area(P[p(i)][j], P[i][p(j)], P[i][j]) +
@@ -75,6 +97,15 @@ public class Surface {
 		area *=scale; 
 		return area; 
 	}
+	
+	SurfaceFrame computeFrame(int i, int j){
+		v3d t1 = T1(i, j);
+		v3d t2 = T2(i, j);
+		v3d n = v3d.cross(t1, t2);
+		n = n.makeUnit(); 
+		return new SurfaceFrame(P[i][j], n, t1, t2, area(i, j), l1(i, j), l2(i, j)); 
+	}
+	
 	double gaussian(int i, int j) { //gaussian curvature
 		// TODO
 		return 0; 
@@ -83,20 +114,30 @@ public class Surface {
 		//TODO
 		return 0; 
 	}
-	Normal[][] normal0;
-	Normal[][] normal; 
-	public void saveNormals(){
-		//TODO
+	SurfaceFrame[][] frame0;
+	SurfaceFrame[][] frame; 
+	public void saveFrames(){
+		for (int i=0; i<num; i++){
+			for (int j=0; j<num; j++){
+				frame0[i][j] = new SurfaceFrame(frame[i][j]); 
+			}
+		}
 	}
-	/*----------display--------------*/
+	public void computeFrame(){
+		for (int i=0; i<num; i++){
+			for (int j=0; j<num; j++){
+				frame[i][j] = computeFrame(i, j); 
+			}
+		}
+	}
 	
+	/*----------display--------------*/
 	public void show(PApplet pa){
-		pa.stroke(50);
+		pa.stroke(200);
 		pa.fill(150, 100);
 		pa.beginShape(PApplet.QUADS); 
 		for (int i=0; i<num-1; i++){
 			for (int j=0; j<num-1; j++){
-			
 				P[i][j].vert(pa); 
 				P[i][j+1].vert(pa);
 				P[i+1][j+1].vert(pa);

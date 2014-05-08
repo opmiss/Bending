@@ -2,6 +2,7 @@ package edu.gatech.cc.model;
 import edu.gatech.cc.geo.v3d;
 import edu.gatech.cc.geo.view;
 import processing.core.PApplet;
+import java.text.*; 
 
 public class Shape3d {
 	// max sizes, counts, selected corners 
@@ -11,6 +12,7 @@ public class Shape3d {
 	private int nt = 0; // current number of triangles
 	public int nc = 0; // current number of corners (3 per triangle)
 	private double vol = 0, surf = 0, edgeLength = 0; // vol and surface and average edge length
+	private double vol0 = 0; 
 	
 	// boundingbox
 	public v3d Wbox, Cbox, Lbox, Hbox; // min-max box center
@@ -29,6 +31,8 @@ public class Shape3d {
 		for (int i=0; i<nv; i++){
 			G0[i] = v3d.pt(G[i]); 
 		}
+		vol = volume(); 
+		vol0 = volume0(); 
 	}
 	int[] V = new int[3 * maxnt]; // V table (triangle/vertex indices)
 	int[] O = new int[3 * maxnt]; // O table (opposite corner indices)
@@ -182,21 +186,24 @@ public class Shape3d {
 				}
 			}
 		}
-		spine.saveNormals();
+		spine.saveFrames();
 		this.saveVertices(); 
 	}
 	public Shape3d transform(Curve3d C){
 		for (int i=0; i<nv; i++){
 			G[i].transform(G0[i], C.frame0[P_c[i]], C.frame[P_c[i]]); 
 		}
+		vol = volume(); 
 		return this; 
 	}
 	public Shape3d transform(Surface C){
 		for (int i=0; i<nv; i++){
-			G[i].transform(G0[i], C.normal0[P_s[i][0]][P_s[i][1]], C.normal[P_s[i][0]][P_s[i][1]]); 
+			G[i].transform(G0[i], C.frame0[P_s[i][0]][P_s[i][1]], C.frame[P_s[i][0]][P_s[i][1]]); 
+			//G[i].print(i+":"); 
 		}
+		vol = volume(); 
 		return this; 
-	}
+	} 
 	/*-----------------------------------------------------------------------------*/
 
 	int addVertex(v3d P) {
@@ -309,7 +316,11 @@ public class Shape3d {
 	v3d g(int c) {
 		return G[v(c)];
 	} // shortcut to get the point of the vertex v(c) of corner c
-
+	
+	v3d g0(int c){
+		return G0[v(c)]; 
+	}
+	
 	// normals for t(c) (must be precomputed)
 	v3d Nv(int c) {
 		return (Nv[V[c]]);
@@ -522,10 +533,22 @@ public class Shape3d {
 		return Math.abs(vol);
 	}
 	
+	public double volume0() {
+		double v = 0;
+		for (int i = 0; i < nt; i++)
+			v += triVol0(i);
+		vol0 = v/6;
+		return Math.abs(vol);
+	}
+	
 	double triVol(int t) {
 		return v3d.mixed(new v3d(), g(3 * t), g(3 * t + 1), g(3 * t + 2));
 	}
-
+	
+	double triVol0(int t){
+		return v3d.mixed(new v3d(), g0(3 * t), g0(3 * t + 1), g0(3 * t + 2)); 
+	}
+	
 	double surfaceArea() {
 		double s = 0;
 		for (int i = 0; i < nt; i++)
@@ -540,6 +563,16 @@ public class Shape3d {
 		else
 			return 0;
 	}
+	double getVol(){
+		return vol; 
+	}
+	double getVol0(){
+		return vol0; 
+	}
+	public String volError(){
+		DecimalFormat myFormatter = new DecimalFormat("#.###"); 
+		return myFormatter.format((vol-vol0)/vol0*100)+"%";
+	}
 	// =================== SMOOTHING=====================
 	void computeLaplaceVectors() { 
 		// computes the vertex normals as sums of the normal vectors of incident tirangles scaled by area/2
@@ -551,7 +584,6 @@ public class Shape3d {
 			Nv[i].div(Valence[i]);
 		}
 	}
-	
 	void tuck(double s) {
 		for (int i = 0; i < nv; i++)
 			G[i].add(s, Nv[i]);
@@ -805,5 +837,4 @@ public class Shape3d {
 		System.out.println("done loading");
 		return this;
 	}
-
 }

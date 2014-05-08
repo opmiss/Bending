@@ -20,19 +20,20 @@ public class BunnySurface extends PApplet{
 			for (int j=0; j<4; j++){
 				P[i][j] = v3d.pt(S0.Wbox);
 				P[i][j].add((-0.9+i*0.6)*S0.rbox, view.J, (-0.9+j*0.6)*S0.rbox, view.I); 
-				P[i][j].print(i+", "+j); P[i][j].toScreen(this).print(); 
+			  //P[i][j].print(i+", "+j); P[i][j].toScreen(this).print(); 
 			}
 		}
-		C0 = new Surface(P, 24); 
-		//S0.register(C0);
+		C0 = new Surface(P, 95); 
+		S0.register(C0);
+		textAlign(PApplet.LEFT, PApplet.TOP);
 	}
 	public void draw() {  
 	  background(255);
 	  view.setupView(this);
 	  fill(255,255, 0); 
 	  this.noStroke(); 
+	 // scribe(); 
 	  S0.showFront(this);
-	  
 	  C0.show(this);
 	 // this.sphere(30);
 	  if (keyPressed && key=='r'&& mousePressed) {
@@ -44,9 +45,17 @@ public class BunnySurface extends PApplet{
 	  else if (keyPressed && key=='t' && mousePressed){
 		  view.translate(this);
 	  }
+	  camera(); // 2D view to write help text
+	  scribe();
+	}
+	public void scribe(){
+		this.textSize(32);
+		this.fill(0);
+		this.text("vol error: "+S0.volError(), 10, 10);
 	}
 	public void mouseDragged(){
 		C0.move(this);
+		S0.transform(C0); 
 	}
 	public void mousePressed() {
 		C0.pick(this);
@@ -60,8 +69,7 @@ public class BunnySurface extends PApplet{
 	public void keyPressed() {
 		if (key=='f') { 
 			for (int i=0; i<3; i++) S0 = S0.refine(); 
-			//S0.register(C0);
+			S0.register(C0);
 		}
 	}
-
 }

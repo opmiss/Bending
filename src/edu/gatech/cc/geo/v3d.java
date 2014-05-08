@@ -1,6 +1,6 @@
 package edu.gatech.cc.geo;
-import edu.gatech.cc.model.Frame;
-import edu.gatech.cc.model.Normal;
+import edu.gatech.cc.model.CurveFrame;
+import edu.gatech.cc.model.SurfaceFrame;
 import processing.core.PApplet;
 
 
@@ -276,7 +276,7 @@ public class v3d {
 		return new v3d(A.x +s*(B.x-A.x), A.y +s*(B.y-A.y), A.z +s*(B.z-A.z)); 
 	}
 	
-	public v3d transform(v3d v, Frame f, Frame g){
+	public v3d transform(v3d v, CurveFrame f, CurveFrame g){
 		v3d V = v3d.vec(f.getO(), v); 
 		double n = v3d.dot(V, f.getN());
 		double b = v3d.dot(V, f.getB());
@@ -290,8 +290,26 @@ public class v3d {
 		return this; 
 	}
 	
-	public v3d transform(v3d v, Normal n, Normal m){
-		//TODO
+	public v3d transform(v3d v, SurfaceFrame n, SurfaceFrame m){
+		/*v.print(); 
+		n.getO().print(); 
+		n.getT1().print(); 
+		n.getT2().print(); 
+		m.getO().print(); 
+		m.getT1().print(); 
+		m.getT2().print(); 
+		System.out.println(n.getL1()+","+n.getL2()+","+n.getA()); 
+		System.out.println(m.getL1()+","+m.getL2()+","+m.getA()); */
+		v3d V = v3d.vec(n.getO(), v); 
+		double h = v3d.dot(V, n.getN()); 
+		double t1 = v3d.dot(V, n.getT1()); 
+		double t2 = v3d.dot(V, n.getT2()); 
+		h = h*n.getA()/m.getA();
+		t1 = t1/n.getL1()*m.getL2(); 
+		t2 = t2/n.getL2()*m.getL2();
+		V = v3d.vec(h, m.getN(), t1, m.getT1(), t2, m.getT2());
+		this.set(m.getO());
+		this.add(V); 
 		return this; 
 	}
 
