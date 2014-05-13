@@ -71,5 +71,9 @@ public class BunnySurface extends PApplet{
 			for (int i=0; i<3; i++) S0 = S0.refine(); 
 			S0.register(C0);
 		}
+		if (key=='c'){
+			System.out.println("save a frame");
+			this.saveFrame("bunny_surface-####.png"); 
+		}
 	}
 }
