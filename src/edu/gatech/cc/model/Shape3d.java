@@ -1,15 +1,17 @@
 package edu.gatech.cc.model;
 import edu.gatech.cc.geo.v3d;
 import edu.gatech.cc.geo.view;
+import edu.gatech.cc.solver.Transform;
 import processing.core.PApplet;
+
 import java.text.*; 
 
 public class Shape3d {
 	// max sizes, counts, selected corners 
 	private int maxnv = 10000; // max number of vertices
 	private int maxnt = maxnv * 2; // max number of triangles
-	private int nv = 0; // current number of vertices
-	private int nt = 0; // current number of triangles
+	public int nv = 0; // current number of vertices
+	public int nt = 0; // current number of triangles
 	public int nc = 0; // current number of corners (3 per triangle)
 	private double vol = 0, surf = 0, edgeLength = 0; // vol and surface and average edge length
 	private double vol0 = 0; 
@@ -166,7 +168,7 @@ public class Shape3d {
 				}
 			}
 		}
-		spine.saveFrames();
+		//spine.saveFrames();
 		this.saveVertices();
 	}
 	public int[][] P_s; 
@@ -186,12 +188,13 @@ public class Shape3d {
 				}
 			}
 		}
-		spine.saveFrames();
+		//spine.saveFrames();
 		this.saveVertices(); 
 	}
 	public Shape3d transform(Curve3d C){
 		for (int i=0; i<nv; i++){
-			G[i].transform(G0[i], C.frame0[P_c[i]], C.frame[P_c[i]]); 
+			//G[i].transform(G0[i], C.frame0[P_c[i]], C.frame[P_c[i]]); 
+			G[i] = Transform.map(G0[i], C.frame0[P_c[i]], C.frame[P_c[i]], 1); 
 		}
 		vol = volume(); 
 		return this; 
@@ -199,7 +202,6 @@ public class Shape3d {
 	public Shape3d transform(Surface C){
 		for (int i=0; i<nv; i++){
 			G[i].transform(G0[i], C.frame0[P_s[i][0]][P_s[i][1]], C.frame[P_s[i][0]][P_s[i][1]]); 
-			//G[i].print(i+":"); 
 		}
 		vol = volume(); 
 		return this; 
@@ -331,7 +333,7 @@ public class Shape3d {
 	}
 	// ================Bounding box and detail size =======================================
 	
-	Shape3d moveBy(v3d V) {
+	public Shape3d moveBy(v3d V) {
 		for (int v = 0; v < nv; v++)
 			G[v].add(V);
 		Cbox.add(V);
@@ -454,7 +456,7 @@ public class Shape3d {
 			if (frontFacing(t))
 				shade(t, pa);
 	}
-	void showTs(PApplet pa) {
+	public void showTs(PApplet pa) {
 		for (int t = 0; t < nt; t++) shade(t, pa);
 	}
 	void showBackTriangles(PApplet pa) {
@@ -815,7 +817,7 @@ public class Shape3d {
 			y = Float.parseFloat(rest.substring(0, comma2));
 			z = Float.parseFloat(rest.substring(comma2 + 1, rest.length()));
 			G[k].set(x, y, z);
-			pa.println(k+":"+"("+x+","+y+","+z+"),");
+			//pa.println(k+":"+"("+x+","+y+","+z+"),");
 		}
 		s = nv + 1;
 		nt = Integer.parseInt(ss[s]);

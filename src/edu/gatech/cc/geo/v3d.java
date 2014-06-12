@@ -1,6 +1,7 @@
 package edu.gatech.cc.geo;
 import edu.gatech.cc.model.CurveFrame;
 import edu.gatech.cc.model.SurfaceFrame;
+import edu.gatech.cc.solver.Transform;
 import processing.core.PApplet;
 
 
@@ -9,7 +10,7 @@ public class v3d {
 	public double y;
 	public double z;
 	public v3d() { x=y=z=0; };
-	public v3d(double px, double py, double pz) {
+	public v3d(double px, double py, double pz){
 		x = px;
 		y = py;
 		z = pz;
@@ -106,27 +107,21 @@ public class v3d {
 		};
 		return this;
 	};
-	
 	public static double mixed(v3d U, v3d V, v3d W) {
 		return dot(U, v3d.cross(V, W));
 	}; // (UxV)*W mixed product, determinant
-	
 	boolean clockwise(v3d U, v3d V, v3d W) {
 		return mixed(U, V, W) >= 0;
 	}; // (UxV)*W>0 U,V,W are clockwise
-	
 	public static boolean clockwise(v3d A, v3d B, v3d C, v3d D) {
 		return mixed(v3d.vec(A, B), v3d.vec(A, C), v3d.vec(A, D)) >= 0;
 	};
-	
 	static double volume(v3d A, v3d B, v3d C, v3d D) {
 		return mixed(v3d.vec(A, B), v3d.vec(A, C), v3d.vec(A, D)) / 6;
 	}; // volume of tet
-
 	public static double mixed(v3d E, v3d A, v3d B, v3d C) {
 		return mixed(v3d.V(E, A), v3d.V(E, B), v3d.V(E, C));
 	} // det (EA EB EC) is >0 when E sees (A,B,C) clockwise
-	
 	public v3d rotate(double a, v3d I, v3d J) {
 		double x = dot(this, I), y = dot(this, J);
 		double c = Math.cos(a), s = Math.sin(a);
@@ -176,7 +171,6 @@ public class v3d {
 	public static v3d U(v3d A, v3d B) {
 		return U(V(A, B));
 	}
-	
 	public v3d makeProject(v3d n){
 		//project to the plane with normal n
 		n = n.makeUnit(); 
@@ -184,24 +178,19 @@ public class v3d {
 		n = n.mul(s); 
 		return this.sub(n); 
 	}
-	
 	public static v3d cross(v3d U, v3d V) {
 		return vec(U.y * V.z - U.z * V.y, U.z * V.x - U.x * V.z, U.x * V.y - U.y
 				* V.x);
 	}; // UxV CROSS PRODUCT (normal to both)
-
 	public static v3d normal(v3d A, v3d B, v3d C) {
 		return cross(V(A, B), V(A, C));
 	}; // normal to triangle (A,B,C), not normalized (proportional to area)
-
 	v3d B(v3d U, v3d V) {
 		return U(cross(cross(U, V), U));
 	} // (UxV)xV unit normal to U in the plane UV
-	
 	public static double dot(v3d U, v3d V){
 		return U.x*V.x+U.y*V.y+U.z*V.z; 
 	}
-	
 	public static double dis(v3d P, v3d Q){
 		double dx = (Q.x-P.x); 
 		double dy = (Q.y-P.y); 
@@ -248,75 +237,56 @@ public class v3d {
 		 
 		x = x*s+pa.width/2; 
 		y = y*s+pa.height/2;
-		
 		return new v2d(x, y); 
 	}
-
 	v3d R(v3d V) {
 		return vec(-V.y, V.x, V.z);
 	} // rotated 90 degrees in XY plane
-	
 	public void vert(PApplet pa){
 		pa.vertex((float)x, (float)y, (float)z);
 	}
-	
 	public v3d rotate(float a, v3d I, v3d J, v3d G) {
 		double x = v3d.dot(v3d.vec(G, this), I), y = v3d.dot(v3d.vec(G, this), J);
 		double c = Math.cos(a), s = Math.sin(a);
 		return this.add(x * c - x - y * s, I, x * s + y * c - y, J);
 	}; // Rotated by a around G in plane (I,J)
-
 	public static v3d R(v3d V, double a, v3d I, v3d J) {
 		double x = dot(V, I), y = dot(V, J);
 		double c = Math.cos(a), s = Math.sin(a);
 		return A(V, V(x * c - x - y * s, I, x * s + y * c - y, J));
 	}; // Rotated V by a parallel to plane (I,J)
-	
 	public static v3d interpolate(v3d A, v3d B, double s){
 		return new v3d(A.x +s*(B.x-A.x), A.y +s*(B.y-A.y), A.z +s*(B.z-A.z)); 
 	}
-	
 	public v3d transform(v3d v, CurveFrame f, CurveFrame g){
-		v3d V = v3d.vec(f.getO(), v); 
-		double n = v3d.dot(V, f.getN());
-		double b = v3d.dot(V, f.getB());
-		double t = v3d.dot(V, f.getT());
-		n = n*f.getL()/g.getL(); 
-		b = b*f.getL()/g.getL(); 
-		//System.out.println(n+", "+b+", "+t); 
-		V = v3d.vec(n, g.getN(), b, g.getB(), t, g.getT()); 
-		this.set(g.getO()); 
-		this.add(V); 
+		this.set(Transform.transfer(v, f, g, 3)); 
 		return this; 
 	}
-	
 	public v3d transform(v3d v, SurfaceFrame n, SurfaceFrame m){
-		/*v.print(); 
-		n.getO().print(); 
-		n.getT1().print(); 
-		n.getT2().print(); 
-		m.getO().print(); 
-		m.getT1().print(); 
-		m.getT2().print(); 
-		System.out.println(n.getL1()+","+n.getL2()+","+n.getA()); 
-		System.out.println(m.getL1()+","+m.getL2()+","+m.getA()); */
-		v3d V = v3d.vec(n.getO(), v); 
-		double h = v3d.dot(V, n.getN()); 
-		double t1 = v3d.dot(V, n.getT1()); 
-		double t2 = v3d.dot(V, n.getT2()); 
-		h = h*n.getA()/m.getA();
-		t1 = t1/n.getL1()*m.getL2(); 
-		t2 = t2/n.getL2()*m.getL2();
-		V = v3d.vec(h, m.getN(), t1, m.getT1(), t2, m.getT2());
-		this.set(m.getO());
-		this.add(V); 
+		this.set(Transform.transfer(v, n, m)); 
 		return this; 
 	}
-
 	// Interpolation non-uniform (Neville's algorithm)
 	public static v3d NI(double a, v3d A, double b, v3d B, double t) {
 		return interpolate(A, B, (t - a) / (b - a));
 	} // P(a)=A, P(b)=B
+	
+	public static double curvature(v3d A, v3d B, v3d C) { // signed radius of curvature
+		v3d AB = v3d.vec(A, B);
+		v3d AC = v3d.vec(A, C);
+		AC = AC.makeUnit();
+		double v = v3d.dis(A, C)/2; 
+		double d = v3d.dot(AB, AC); 
+		v3d D = v3d.pt(A);
+		D.add(d, AC);
+		v3d H = v3d.vec(B, D); 
+		double h = H.norm();
+		if (h < 0.00001)
+			h = (double) 0.00001;
+		double k = (double) 2 * h/v/v;
+		if (v3d.dot(H, view.J)>0) k = -k; 
+		return k; 
+	}
 
 	public static v3d NI(double a, v3d A, double b, v3d B, double c, v3d C, double t) {
 		v3d P = NI(a, A, b, B, t);

@@ -1,24 +1,28 @@
 package edu.gatech.cc.model;
 import edu.gatech.cc.geo.*;
 import processing.core.*;
+
 public class CurveFrame {
-		private v3d T; //tangent 
-		private v3d pN; //normal
-		private v3d pB; //binormal
-		private v3d fN; 
-		private v3d fB; 
-		private v3d O; //frame center 
+		private v3d T;  //tangent 
+		private v3d pN; //propagated normal
+		private v3d pB; //propagated binormal
+		private v3d fN; //frenet normal
+		private v3d fB; //frenet binormal
+		private v3d O;  //frame center 
 		double K; //curvature 
 		double L; //stretch
 		
-		private CurveFrame(v3d t, v3d n, v3d b, v3d o, double l){
+		private CurveFrame(v3d t, v3d n, v3d b, v3d o, double l, double k){
 			T = v3d.U(t); 
-			setN(n.makeUnit()); 
+			setPN(n.makeUnit()); 
 			pB = b.makeUnit(); 
 			O = o; 
 			L = l; 
+			K = k; 
+			fN = pN; //-
+			fB = pB; //-
 		}
-	/*	public Frame(v3d t, v3d n, v3d o){
+	   /*public Frame(v3d t, v3d n, v3d o){
 			T = t.makeUnit(); 
 			setN(n.makeUnit()); 
 			pB = v3d.cross(T, getN()).makeUnit(); 
@@ -30,6 +34,9 @@ public class CurveFrame {
 			pB = v3d.vec(f.pB); 
 			O = v3d.vec(f.O); 
 			L = f.L; 
+			K = f.K; 
+			fN = pN; //-
+			fB = pB; //-
 		}
 	/*	public static Frame Frenet(v3d prev, v3d cur, v3d next){
 			v3d t = v3d.vec(prev, cur); 
@@ -42,8 +49,8 @@ public class CurveFrame {
 		}*/
 		public void correctAfter(CurveFrame P){
 			/* This computes the normal propagated frame*/
-			setN((P.getN()).makeProject(T)); 
-			getN().makeUnit(); 
+			setPN((P.getPN()).makeProject(T)); 
+			getPN().makeUnit(); 
 			pB = (P.pB).makeProject(T); 
 			pB.makeUnit(); 
 		}
@@ -52,9 +59,10 @@ public class CurveFrame {
 			v3d b = v3d.cross(t, new v3d(0, 0, 1));
 			v3d n = v3d.cross(t, b);
 			double l = v3d.dis(prev, cur); 
-			return new CurveFrame(t, n, b, prev, l); 
+			double k = v3d.curvature(prev, cur, next); 
+			return new CurveFrame(t, n, b, prev, l, k); 
 		}
-	/*	public static Frame firstFrenet(v3d prev, v3d cur, v3d next){
+	   /*public static Frame firstFrenet(v3d prev, v3d cur, v3d next){
 			v3d t = v3d.vec(prev, cur); 
 			v3d b = v3d.cross(t, v3d.vec(cur, next)); 
 			if (b.square()<0.001) b = v3d.cross(t, new v3d(0, 0, 1));
@@ -79,14 +87,16 @@ public class CurveFrame {
 			}
 			v3d T = v3d.vec(cur, next);
 			v3d N = v3d.cross(T, B0); 
-			double l = (v3d.dis(prev, cur) +v3d.dis(cur, next))/2; 
-			return new CurveFrame(T, N, B0, cur, l); 
+			double l = (v3d.dis(prev, cur) +v3d.dis(cur, next))/2;
+			double k = v3d.curvature(prev, cur, next); 
+			return new CurveFrame(T, N, B0, cur, l, k); 
 		}
 		public static CurveFrame last(CurveFrame F, v3d prev, v3d cur, v3d next){
 			v3d t = v3d.vec(cur, next); 
-			v3d b = v3d.cross(F.getN(), t);
+			v3d b = v3d.cross(F.getPN(), t);
 			double l = v3d.dis(cur, next); 
-			return new CurveFrame(t, F.getN(), b, next, l); 
+			double k = v3d.curvature(prev, cur, next); 
+			return new CurveFrame(t, F.getPN(), b, next, l, k); 
 		}
 		public v3d[] slice(double r, int num){
 			v3d[] ret = new v3d[num]; 
@@ -94,17 +104,22 @@ public class CurveFrame {
 			double sa = 0; 
 			for (int i=0; i<num; i++){
 				ret[i] = v3d.pt(O); 
-				ret[i] = ret[i].add(r*Math.cos(sa), getN(), r*Math.sin(sa), pB); 
-				//ret[i].print(); 
+				ret[i] = ret[i].add(r*Math.cos(sa), getPN(), r*Math.sin(sa), pB); 
 				sa+=da; 
 			}
 			return ret; 
 		}
-		public v3d getN() {
+		public v3d getPN() {
 			return pN;
 		}
-		public v3d getB(){
+		public v3d getPB(){
 			return pB; 
+		}
+		public v3d getFN(){
+			return fN; 
+		}
+		public v3d getFB(){
+			return fB; 
 		}
 		public v3d getO(){
 			return O; 
@@ -115,8 +130,7 @@ public class CurveFrame {
 		public double getK(){
 			return K; 
 		}
-		
-		public void setN(v3d n) {
+		public void setPN(v3d n) {
 			pN = n;
 		}
 		public v3d getT(){

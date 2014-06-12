@@ -51,12 +51,20 @@ public class Surface {
 		pi=-1; pj = -1;  
 	}
 	public void move(PApplet pa){
-		if (pi <0 || pj <0) return ; 
+		if (pi <0 || pj <0) return; 
 		C[pi][pj] = (C[pi][pj]).add( (pa.mouseY - pa.pmouseY), view.J);
 		C[pi][pj] = (C[pi][pj]).add( (pa.mouseX - pa.pmouseX), view.I); 
 		this.fillPts(step);
 		this.computeFrame(); 
 	}
+	
+	public void translate(PApplet pa){
+		if (pi<0 || pj <0) return; 
+		C[pi][pj] = (C[pi][pj]).add((pa.mouseX - pa.pmouseX), view.K);
+		this.fillPts(step);
+		this.computeFrame(); 
+	}
+	
 	int n(int i) {
 		return (i >= num - 1)?(num-1):(i+1);
 	}

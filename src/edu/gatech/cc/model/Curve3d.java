@@ -26,6 +26,9 @@ public class Curve3d {
 		computeFrame();
 		tiles.createTiles();
 	}
+	public void setCylinder(){
+		tiles = new Tiles(this, 16, 30, ShowMode.CHECKER);  
+	}
 	void fillPts(double d){
 		int i=0; 
 		for (double s=0; s<=1.0001; s+=d){ 
@@ -46,11 +49,14 @@ public class Curve3d {
 	public void drop(){
 		pid=-1; 
 	}
-	
 	public void move(int i, PApplet pa){
 		C[i] = C[i].add((pa.mouseY - pa.pmouseY)*0.5, view.J); 
 		C[i] = C[i].add((pa.mouseX - pa.pmouseX)*0.5, view.I);
 		compute();
+	}
+	public void translate(int i, PApplet pa){
+		C[i] = C[i].add((pa.mouseX - pa.pmouseX)*0.5, view.K); 
+		compute(); 
 	}
 	
 	int n(int i) {
@@ -76,8 +82,6 @@ public class Curve3d {
 	CurveFrame[] frame0;
 	CurveFrame[] frame; 
 	
-	
-	
 	public void saveFrames(){
 		for (int i=0;i<num; i++){ 
 			frame0[i] = new CurveFrame(frame[i]); 
@@ -97,12 +101,12 @@ public class Curve3d {
 	}
 
 	/*----------------------------Display--------------------------------*/
-	Tiles tiles; 
+	public Tiles tiles; 
 	public void show(PApplet pa){
 		tiles.show(pa);
 	}
 	
 	public void showCtrl(PApplet pa){
-		
+		for (int i=0; i<4; i++) C[i].show(30, pa);
 	}
 }

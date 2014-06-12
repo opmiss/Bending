@@ -1,30 +1,30 @@
 package edu.gatech.cc.view;
+
 import processing.core.PApplet;
 import edu.gatech.cc.geo.v3d;
 import edu.gatech.cc.geo.view;
-import edu.gatech.cc.model.Surface;
+import edu.gatech.cc.model.Curve3d;
 import edu.gatech.cc.model.Shape3d;
 
-public class BunnySurface extends PApplet{
+public class Cylinder extends PApplet {
 	Shape3d S0 = new Shape3d(this); 
-	Surface C0; 
-	v3d[][] P; 
+	Curve3d C0; 
+	v3d[] P = new v3d[4]; 
 	public void setup() {
 		this.size(1280, 720, PApplet.P3D); 
 		view.initView();
 		S0.declareVectors(); 
 		S0.loadMeshVTS(this); 
 		S0 = S0.computeBox();
-		P = new v3d[4][4]; 
-		for (int i=0; i<4; i++){
-			for (int j=0; j<4; j++){
-				P[i][j] = v3d.pt(S0.Wbox);
-				P[i][j].add((-0.9+i*0.6)*S0.rbox, view.J, (-0.9+j*0.6)*S0.rbox, view.I); 
-			  //P[i][j].print(i+", "+j); P[i][j].toScreen(this).print(); 
-			}
-		}
-		C0 = new Surface(P, 95); 
-		S0.register(C0);
+		P = new v3d[4]; 
+		P[0] = v3d.pt(S0.Wbox); P[0].add(-S0.rbox*1.2, view.I); 
+		P[1] = v3d.pt(S0.Wbox); P[1].add(-S0.rbox*0.4, view.I); 
+		P[2] = v3d.pt(S0.Wbox); P[2].add(S0.rbox*0.4, view.I); 
+		P[3] = v3d.pt(S0.Wbox); P[3].add(S0.rbox*1.2, view.I); 
+		C0 = new Curve3d(P, 100); 
+		C0.setCylinder();
+		C0.saveFrames();
+		C0.tiles.saveVertices();
 		textAlign(PApplet.LEFT, PApplet.TOP);
 	}
 	public void draw() {  
@@ -32,8 +32,6 @@ public class BunnySurface extends PApplet{
 	  view.setupView(this);
 	  fill(255,255, 0); 
 	  this.noStroke(); 
-	 // scribe(); 
-	  S0.showFront(this);
 	  C0.show(this);
 	 // this.sphere(30);
 	  if (keyPressed && key=='r'&& mousePressed) {
@@ -45,41 +43,39 @@ public class BunnySurface extends PApplet{
 	  else if (keyPressed && key=='t' && mousePressed){
 		  view.translate(this);
 	  }
-	  camera(); // 2D view to write help text
-	  scribe();
-	}
-	public void scribe(){
-		this.textSize(32);
-		this.fill(0);
-		this.text("vol error: "+S0.volError(), 10, 10);
+	 // camera(); 
 	}
 	public void mouseDragged(){
-		if (keyPressed && key == 'p'){
-			C0.translate(this);
-			S0.transform(C0); 
+		if (keyPressed && key=='1'){ 
+			C0.move(0, this);
+			C0.tiles.transform(C0); 
 		}
-		else{ 
-			C0.move(this);
-			S0.transform(C0); 
+		else if (keyPressed && key=='2'){
+			C0.move(1, this);
+			C0.tiles.transform(C0); 
+		}
+		else if (keyPressed && key=='3'){
+			C0.move(2, this);
+			C0.tiles.transform(C0); 
+		}
+		else if (keyPressed && key=='4'){	
+			C0.move(3, this);
+			C0.tiles.transform(C0); 
 		}
 	}
 	public void mousePressed() {
-		C0.pick(this);
+		
 	}
 	public void mouseReleased() {
-		C0.drop(); 
+		
 	}
 	public void keyReleased() {
 		
 	}
 	public void keyPressed() {
-		if (key=='f') { 
-			for (int i=0; i<3; i++) S0 = S0.refine(); 
-			S0.register(C0);
-		}
 		if (key=='c'){
-			System.out.println("save a frame");
-			this.saveFrame("bunny_surface-####.png"); 
+			System.out.println("save a picture"); 
+			this.saveFrame("cylinder-####.png"); 
 		}
 	}
 }

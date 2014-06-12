@@ -1,5 +1,6 @@
 package edu.gatech.cc.model;
 import edu.gatech.cc.geo.v3d;
+import edu.gatech.cc.solver.Transform;
 import processing.core.PApplet;
 
 
@@ -40,6 +41,24 @@ public class Tiles {
 		for (int i=0; i<np; i++){
 			grid[i] = getSpine().getPFrame(i).slice(offset_dis, slice_num); 
 		}
+	}
+	//----------------------transform----------------------------
+	public v3d[][] grid0=null;
+	public void saveVertices(){
+		grid0 = new v3d[np][slice_num]; 
+		for (int i=0; i<np; i++){
+			for (int j=0; j<slice_num; j++){
+				grid0[i][j] = v3d.pt(grid[i][j]); 
+			}
+		}
+	}
+	public Tiles transform(Curve3d C){
+		for (int i=0; i<np; i++){
+			for (int j=0; j<slice_num; j++){
+				grid[i][j] = Transform.map(grid0[i][j], C.frame0[i], C.frame[i], 3); 
+			}
+		}
+		return this; 	
 	}
 	//---------------------display--------------------------------
 	ShowMode smode=ShowMode.CHECKER; 
