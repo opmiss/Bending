@@ -20,8 +20,9 @@ public class BunnyCurve extends PApplet {
 		P[1] = v3d.pt(S0.Wbox); P[1].add(-S0.rbox*0.4, view.I); 
 		P[2] = v3d.pt(S0.Wbox); P[2].add(S0.rbox*0.4, view.I); 
 		P[3] = v3d.pt(S0.Wbox); P[3].add(S0.rbox*1.2, view.I); 
-		C0 = new Curve3d(P, 100); 
+		C0 = new Curve3d(P, 10); 
 		S0.register(C0);
+		C0.saveFrames();
 		textAlign(PApplet.LEFT, PApplet.TOP);
 	}
 	public void draw() {  

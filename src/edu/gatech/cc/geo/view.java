@@ -23,8 +23,11 @@ public class view {
 				 (float)F.x, (float)F.y, (float)F.z, 
 				 (float)U.x, (float)U.y, (float)U.z); // defines the view : eye, ctr, up
 		 v3d Li=v3d.U(v3d.vec(E,F).add(0.1*v3d.dis(E,F),J));   // vec Li=U(A(vec.V(E,F),-d(E,F),J)); 
-		 pa.directionalLight(255,255,255,(float)Li.x,(float)Li.y,(float)Li.z); // direction of light: behind and above the viewer
-		 pa.specular(255,255,0); pa.shininess(5);
+		 
+		 pa.pointLight(255, 255, 255, (float)E.x, (float)E.y, (float)E.z); 
+		 //pa.directionalLight(255,255,255,(float)Li.x,(float)Li.y,(float)Li.z); // direction of light: behind and above the viewer
+		 
+		 //pa.specular(255,255,0); pa.shininess(5);
 	}
 	public static void rotate(PApplet pa){
 		 view.E = view.E.rotate(PApplet.PI * (pa.mouseX - pa.pmouseX) / pa.width, view.I, view.K, view.F);

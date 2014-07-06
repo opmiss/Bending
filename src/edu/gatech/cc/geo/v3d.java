@@ -30,6 +30,9 @@ public class v3d {
 	public static v3d vec(double u, v3d U, double v, v3d V, double w, v3d W){
 		return new v3d(u*U.x+v*V.x+w*W.x, u*U.y+v*V.y+w*W.y, u*U.z+v*V.z+w*W.z); 
 	}
+	public static v3d vec(double u, v3d U){
+		return new v3d(u*U.x, u*U.y, u*U.z);
+	}
 	public static v3d copy(v3d v){
 		return new v3d(v.x, v.y, v.z); 
 	}
@@ -300,6 +303,33 @@ public class v3d {
 		return NI(a, P, d, Q, t);
 	} // P(a)=A, P(b)=B, P(c)=C, P(d)=D
 	
+	public static v3d barycentric(v3d P1, v3d P2, v3d P3, v3d X){
+		v3d V31 = v3d.vec(P3, P1);
+		v3d V32 = v3d.vec(P3, P2);
+		double A11 = v3d.dot(V31, V31); 
+		double A12 = v3d.dot(V31, V32);
+		double A22 = v3d.dot(V32, V32);
+		v3d V3x = v3d.vec(P3, X);
+		double B1 = v3d.dot(V3x, V31);
+		double B2 = v3d.dot(V3x, V32);
+		double detA = A11*A22 - A12*A12; 
+		double l1 = (A22*B1-A12*B2)/detA; 
+		double l2 = (-A12*B1 + A11*B2)/detA; 
+		double l3 = 1-l1-l2; 
+		return new v3d(l1, l2, l3); 
+	}
+	public static v3d project(v3d A, v3d B, v3d C, v3d P){
+		v3d N = v3d.normal(A, B, C); 
+		N = N.makeUnit(); 
+		v3d AP = v3d.vec(A, P);
+		v3d AM = AP.sub(v3d.vec(v3d.dot(AP, N), N)); 
+		return AM.add(A); 
+	}
+	public static v3d test(v3d A, v3d B, v3d C, v3d P){
+		v3d X = v3d.project(A, B, C, P); 
+		return v3d.barycentric(A, B, C, X); 
+	}
+	
 	public void show(PApplet pa){
 		pa.pushMatrix();
 		pa.translate((float)x, (float)y, (float)z);
@@ -311,5 +341,8 @@ public class v3d {
 		pa.translate((float)x, (float)y, (float)z);
 		pa.sphere(r);
 		pa.popMatrix(); 
+	}
+	public static void main(String[] args){
+		System.out.println("hello"); 
 	}
 }

@@ -26,7 +26,7 @@ public class Shape3d {
 	public Boolean showEdges = false;
 	
 	// primary tables
-	v3d[] G = new v3d[maxnv]; // geometry table (vertices)
+	public v3d[] G = new v3d[maxnv]; // geometry table (vertices)
 	v3d[] G0 = new v3d[maxnv]; 
 	public void saveVertices(){
 		G0 = new v3d[nv];
@@ -36,7 +36,7 @@ public class Shape3d {
 		vol = volume(); 
 		vol0 = volume0(); 
 	}
-	int[] V = new int[3 * maxnt]; // V table (triangle/vertex indices)
+	public int[] V = new int[3 * maxnt]; // V table (triangle/vertex indices)
 	int[] O = new int[3 * maxnt]; // O table (opposite corner indices)
 	
 	// Normal vectors
@@ -315,7 +315,7 @@ public class Shape3d {
 	// operations on the selected corner cc
 	
 	// geometry for corner c
-	v3d g(int c) {
+	public v3d g(int c) {
 		return G[v(c)];
 	} // shortcut to get the point of the vertex v(c) of corner c
 	

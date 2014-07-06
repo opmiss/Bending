@@ -48,7 +48,8 @@ public class Transform {
 			b = b/Math.sqrt(o); 
 			break; 
 		}
-		V = v3d.vec(n, F1.getPN(), b, F1.getPB(), t, F1.getT()); 
+		//V = v3d.vec(n, F1.getPN(), b, F1.getPB(), t, F1.getT()); 
+		V = v3d.vec(n, F1.getPN(), b, F1.getPB(), 0, F1.getT()); 
 		v3d P1 = v3d.pt(F1.getO()); 
 		P1.add(V); 
 		return P1; 

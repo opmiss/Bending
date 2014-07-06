@@ -1,13 +1,18 @@
 package edu.gatech.cc.view;
+
 import processing.core.PApplet;
 import edu.gatech.cc.geo.v3d;
 import edu.gatech.cc.geo.view;
-import edu.gatech.cc.model.Surface;
+import edu.gatech.cc.model.Mesh;
 import edu.gatech.cc.model.Shape3d;
+import edu.gatech.cc.model.Surface;
+import edu.gatech.cc.solver.Register;
 
-public class BunnySurface extends PApplet{
+public class BunnyMesh extends PApplet{
 	Shape3d S0 = new Shape3d(this); 
 	Surface C0; 
+	Mesh M0; 
+	Register R;  
 	v3d[][] P; 
 	public void setup() {
 		this.size(1280, 720, PApplet.P3D); 
@@ -23,20 +28,21 @@ public class BunnySurface extends PApplet{
 			  //P[i][j].print(i+", "+j); P[i][j].toScreen(this).print(); 
 			}
 		}
-		C0 = new Surface(P, 20); 
-		S0.register(C0);
-		C0.saveFrames();
+		C0 = new Surface(P, 40); 
+		M0 = new Mesh(this, C0); 
+		//S0.register(C0);
+		//C0.saveFrames();
+		R = new Register(S0, M0); 
 		textAlign(PApplet.LEFT, PApplet.TOP);
 	}
 	public void draw() {  
 	  background(255);
 	  view.setupView(this);
-	  fill(255,255, 0); 
-	  this.noStroke(); 
-	 // scribe(); 
+	  fill(240, 239, 136); 
 	  S0.showFront(this);
-	  C0.show(this);
-	 // this.sphere(30);
+	  fill(155, 200);
+	  M0.showFront(this);
+	  C0.showCtrl(this);
 	  if (keyPressed && key=='r'&& mousePressed) {
 		  view.rotate(this);
 	  } // rotate E around F
@@ -57,18 +63,21 @@ public class BunnySurface extends PApplet{
 	public void mouseDragged(){
 		if (keyPressed && key == 'p'){
 			C0.translate(this);
-			S0.transform(C0); 
+			M0.set(C0);
+			R.reconstruct();
 		}
 		else{ 
 			C0.move(this);
-			S0.transform(C0); 
+			M0.set(C0);
+			R.reconstruct();
 		}
 	}
 	public void mousePressed() {
 		C0.pick(this);
+	
 	}
 	public void mouseReleased() {
-		C0.drop(); 
+		C0.drop();
 	}
 	public void keyReleased() {
 		
@@ -76,7 +85,7 @@ public class BunnySurface extends PApplet{
 	public void keyPressed() {
 		if (key=='f') { 
 			for (int i=0; i<3; i++) S0 = S0.refine(); 
-			S0.register(C0);
+			R.register();
 		}
 		if (key=='c'){
 			System.out.println("save a frame");

@@ -182,8 +182,8 @@ public class Shape2d {
 	public Shape2d Map(Arc2d C0, Arc2d C1){
 		v2d[] pts = new v2d[num]; 
 		for (int i=0; i<num; i++) {
-			pts[i] = P[i].map(C0.C, C1.O, C1.R); 
-			//pts[i] = P[i].noMap(C0.C, C1.O, C1.R); 
+			//pts[i] = P[i].map(C0.C, C1.O, C1.R); 
+			pts[i] = P[i].noMap(C0.C, C1.O, C1.R); 
 		}
 		return new Shape2d(pts, num); 
 	}

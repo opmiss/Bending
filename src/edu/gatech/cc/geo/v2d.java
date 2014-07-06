@@ -138,7 +138,7 @@ public class v2d {
 	}
 	
 	public void show(float r, PApplet pa){
-		pa.ellipse((float)x, (float)y, 16, 16);
+		pa.ellipse((float)x, (float)y, r, r);
 	}
 	
 	public v2d map(v2d C, v2d O, double R){

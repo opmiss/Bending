@@ -139,6 +139,9 @@ public class Surface {
 		}
 	}
 	
+	//public toShape 
+	
+	
 	/*----------display--------------*/
 	public void show(PApplet pa){
 		pa.stroke(200);
@@ -153,6 +156,16 @@ public class Surface {
 			}
 		} 
 		pa.endShape(); 
+		pa.noStroke();
+		pa.sphereDetail(10);
+		color.fill(color.ruby(), pa);
+		for (int i=0; i<4; i++){
+			for (int j=0; j<4; j++){
+				C[i][j].show(6, pa);
+			}
+		}
+	}
+	public void showCtrl(PApplet pa){
 		pa.noStroke();
 		pa.sphereDetail(10);
 		color.fill(color.ruby(), pa);
