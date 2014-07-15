@@ -29,6 +29,11 @@ public class v2d {
 		x = p.x; 
 		y = p.y; 
 	}
+	
+	public void setTo(double sx, double sy){
+		x = sx; 
+		y = sy; 
+	}
 
 	public void unit() {
 		double n = this.n();

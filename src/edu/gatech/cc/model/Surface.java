@@ -115,12 +115,31 @@ public class Surface {
 	}
 	
 	double gaussian(int i, int j) { //gaussian curvature
-		// TODO
-		return 0; 
+		if (i==num-1) return gaussian(i-1, j); 
+		if (i==0) return gaussian(1, j);
+		if (j==num-1) return gaussian(i, j-1);
+		if (j==0) return gaussian(i, 1);
+		double a1 = v3d.angle(P[i][j], P[i-1][j], P[i][j+1]);
+		double a2 = v3d.angle(P[i][j], P[i][j+1], P[i+1][j]); 
+		double a3 = v3d.angle(P[i][j], P[i+1][j], P[i][j-1]); 
+		double a4 = v3d.angle(P[i][j], P[i][j-1], P[i-1][j]); 
+		return (Math.PI+Math.PI-a1-a2-a3-a4); 
 	}
 	double mean(int i, int j){ //mean curvature 
-		//TODO
-		return 0; 
+		if (i==num-1) return mean(i-1, j); 
+		if (i==0) return mean(1, j);
+		if (j==num-1) return mean(i, j-1);
+		if (j==0) return mean(i, 1);
+		v3d v1 = v3d.vec(P[i][j], P[i-1][j]).mul(
+				v3d.cot(P[i][j-1], P[i][j], P[i-1][j]) + v3d.cot(P[i][j+1], P[i][j], P[i-1][j]) );
+		v3d v2 = v3d.vec(P[i][j], P[i][j+1]).mul(
+				v3d.cot(P[i-1][j], P[i][j], P[i][j+1]) + v3d.cot(P[i+1][j], P[i][j], P[i][j+1]));
+		v3d v3 = v3d.vec(P[i][j], P[i+1][j]).mul(
+				v3d.cot(P[i][j+1], P[i][j], P[i+1][j]) + v3d.cot(P[i][j-1], P[i][j], P[i+1][j]));
+		v3d v4 = v3d.vec(P[i][j], P[i][j-1]).mul(
+				v3d.cot(P[i+1][j], P[i][j], P[i][j-1]) + v3d.cot(P[i-1][j], P[i][j], P[i][j-1]));
+		double m = v3d.dot(v1.add(v2).add(v3).add(v4), v3d.cross(T1(i, j), T2(i, j))); 
+		return m/area(i, j); 
 	}
 	SurfaceFrame[][] frame0;
 	SurfaceFrame[][] frame; 
@@ -139,13 +158,11 @@ public class Surface {
 		}
 	}
 	
-	//public toShape 
-	
 	
 	/*----------display--------------*/
 	public void show(PApplet pa){
 		pa.stroke(200);
-		pa.fill(150, 100);
+		pa.fill(150, 200);
 		pa.beginShape(PApplet.QUADS); 
 		for (int i=0; i<num-1; i++){
 			for (int j=0; j<num-1; j++){

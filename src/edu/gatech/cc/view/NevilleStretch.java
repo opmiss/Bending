@@ -1,5 +1,4 @@
 package edu.gatech.cc.view;
-
 import processing.core.PApplet;
 import edu.gatech.cc.geo.v2d;
 import edu.gatech.cc.model.Neville2d;
@@ -41,21 +40,22 @@ public class NevilleStretch extends PApplet{
 		this.fill(0, 0, 255);
 		spine.showCtrl(this);
 	}
-	
 	public void showOriginal(){
 		
 	}
-	
 	public void showBend(){
 		
 	}
-	
 	public void keyPressed(){
 		if (key=='c') {
 			System.out.println("save a frame"); 
-			saveFrame("pic-####.png"); 
+			saveFrame("neville-####.png"); 
 		}
-		
+		if (key=='b') {
+			spine.BendToCircle(new v2d(width/2, height/2));
+		}
+		if (key=='s') {
+			spine.StretchInLine(new v2d(width/2, height/2));
+		}
 	}
-
 }

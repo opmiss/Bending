@@ -111,6 +111,14 @@ public class Neville2d {
 		}
 	}
 	
+	public double perimeter(){
+		double l=0; 
+		for (int i=0; i<num-1; i++){
+			l+=P[i].disTo(P[i+1]); 
+		}
+		return l; 
+	}
+	
 	public void showGrid(PApplet pa){
 		for (int j=0; j<3; j++){
 			for (int i=0; i<num-2; i+=3){
@@ -129,7 +137,27 @@ public class Neville2d {
 			}
 		}
 	}
-	
+	//use cases 
+	public void BendToCircle(v2d c){//bend without stretching 
+		double l = perimeter();
+		double r = l/Math.PI;
+		double da = Math.PI/num; 
+		double a = -Math.PI;
+		for (int i=0; i<num; i++){
+			P[i].setTo(c.x+r*Math.cos(a), c.y+r*Math.sin(a));
+			a+=da; 
+		}
+		for (int i=0; i<4; i++){
+			C[i].setTo(P[i*(num-1)/3]);
+		}
+		computeGrid();
+	}
+	public void StretchInLine(v2d c){//stretch without bending
+		C[1].x += (c.x-C[1].x)/2;
+		C[2].x += (c.x-C[2].x)/2; 
+		fillPts(1.0/(num-1));
+		computeGrid(); 
+	}
 	public void show(PApplet pa){
 		pa.beginShape();
 		for (int i=0; i<num; i++){

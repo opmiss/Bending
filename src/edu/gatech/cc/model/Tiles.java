@@ -52,10 +52,10 @@ public class Tiles {
 			}
 		}
 	}
-	public Tiles transform(Curve3d C){
+	public Tiles transform(Curve3d C, int mode){
 		for (int i=0; i<np; i++){
 			for (int j=0; j<slice_num; j++){
-				grid[i][j] = Transform.map(grid0[i][j], C.frame0[i], C.frame[i], 3); 
+				grid[i][j] = Transform.map(grid0[i][j], C.frame0[i], C.frame[i], mode); 
 			}
 		}
 		return this; 	

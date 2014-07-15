@@ -11,7 +11,9 @@ public class Mesh extends Shape3d{
 		init(S); 
 	}
 	int[][] id = null; 
+	public Surface surface = null; 
 	public void init(Surface S){
+		surface = S; 
 		id = new int[S.num][S.num]; 
 		for (int i=0; i<S.num; i++){
 			for (int j=0; j<S.num; j++){

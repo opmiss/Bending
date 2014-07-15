@@ -1,5 +1,4 @@
 package edu.gatech.cc.view;
-
 import processing.core.PApplet;
 import edu.gatech.cc.geo.v3d;
 import edu.gatech.cc.geo.view;
@@ -14,12 +13,14 @@ public class BunnyMesh extends PApplet{
 	Mesh M0; 
 	Register R;  
 	v3d[][] P; 
+	boolean showobj=true; 
 	public void setup() {
 		this.size(1280, 720, PApplet.P3D); 
 		view.initView();
 		S0.declareVectors(); 
 		S0.loadMeshVTS(this); 
 		S0 = S0.computeBox();
+		for (int i=0; i<3; i++) S0 = S0.refine(); 
 		P = new v3d[4][4]; 
 		for (int i=0; i<4; i++){
 			for (int j=0; j<4; j++){
@@ -39,8 +40,9 @@ public class BunnyMesh extends PApplet{
 	  background(255);
 	  view.setupView(this);
 	  fill(240, 239, 136); 
-	  S0.showFront(this);
-	  fill(155, 200);
+	  if (showobj) S0.showFront(this);
+	  if (showobj) fill(155, 200);
+	  else fill(155); 
 	  M0.showFront(this);
 	  C0.showCtrl(this);
 	  if (keyPressed && key=='r'&& mousePressed) {
@@ -53,7 +55,7 @@ public class BunnyMesh extends PApplet{
 		  view.translate(this);
 	  }
 	  camera(); // 2D view to write help text
-	  scribe();
+	  //scribe();
 	}
 	public void scribe(){
 		this.textSize(32);
@@ -84,12 +86,17 @@ public class BunnyMesh extends PApplet{
 	}
 	public void keyPressed() {
 		if (key=='f') { 
-			for (int i=0; i<3; i++) S0 = S0.refine(); 
 			R.register();
 		}
 		if (key=='c'){
 			System.out.println("save a frame");
 			this.saveFrame("bunny_surface-####.png"); 
+		}
+		if (key=='o'){
+			showobj = !showobj;
+		}
+		if (key=='w'){
+			R._reconstruct();
 		}
 	}
 }

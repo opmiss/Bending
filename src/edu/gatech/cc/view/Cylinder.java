@@ -1,5 +1,4 @@
 package edu.gatech.cc.view;
-
 import processing.core.PApplet;
 import edu.gatech.cc.geo.v3d;
 import edu.gatech.cc.geo.view;
@@ -9,6 +8,8 @@ import edu.gatech.cc.model.Shape3d;
 public class Cylinder extends PApplet {
 	Shape3d S0 = new Shape3d(this); 
 	Curve3d C0; 
+	int mode = 3; 
+	String bmode = "radial"; 
 	v3d[] P = new v3d[4]; 
 	public void setup() {
 		this.size(1280, 720, PApplet.P3D); 
@@ -43,25 +44,31 @@ public class Cylinder extends PApplet {
 	  else if (keyPressed && key=='t' && mousePressed){
 		  view.translate(this);
 	  }
-	 // camera(); 
+	  camera(); 
+	  scribe(); 
 	}
 	public void mouseDragged(){
 		if (keyPressed && key=='1'){ 
 			C0.move(0, this);
-			C0.tiles.transform(C0); 
+			C0.tiles.transform(C0, mode); 
 		}
 		else if (keyPressed && key=='2'){
 			C0.move(1, this);
-			C0.tiles.transform(C0); 
+			C0.tiles.transform(C0, mode); 
 		}
 		else if (keyPressed && key=='3'){
 			C0.move(2, this);
-			C0.tiles.transform(C0); 
+			C0.tiles.transform(C0, mode); 
 		}
 		else if (keyPressed && key=='4'){	
 			C0.move(3, this);
-			C0.tiles.transform(C0); 
+			C0.tiles.transform(C0, mode); 
 		}
+	}
+	public void scribe(){
+		this.textSize(32);
+		this.fill(0);
+		this.text("correction mode: "+bmode, 200, 20);
 	}
 	public void mousePressed() {
 		
@@ -76,6 +83,18 @@ public class Cylinder extends PApplet {
 		if (key=='c'){
 			System.out.println("save a picture"); 
 			this.saveFrame("cylinder-####.png"); 
+		}
+		if (key=='7'){
+			mode = 1; bmode = "normal"; 
+			C0.tiles.transform(C0, mode); 
+		}
+		if (key=='8'){
+			mode = 2; bmode = "binormal"; 
+			C0.tiles.transform(C0, mode); 
+		}
+		if (key=='9'){
+			mode = 3; bmode = "radial"; 
+			C0.tiles.transform(C0, mode); 
 		}
 	}
 }

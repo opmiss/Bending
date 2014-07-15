@@ -214,6 +214,22 @@ public class v3d {
 		return (v3d.normal(A, B, C)).norm() / 2;
 	}; // area of triangle
 	
+	public static double angle(v3d O, v3d A, v3d B){
+		v3d OA = v3d.vec(O, A);
+		v3d OB = v3d.vec(O, B);
+		double cosa = v3d.dot(OA, OB);
+		double sina = v3d.cross(OA, OB).norm(); 
+		return Math.atan2(sina, cosa); 
+	}
+	
+	public static double cot(v3d O, v3d A, v3d B){
+		v3d OA = v3d.vec(O, A);
+		v3d OB = v3d.vec(O, B);
+		double cosa = v3d.dot(OA, OB);
+		double sina = v3d.cross(OA, OB).norm(); 
+		return cosa/sina; 
+	}
+	
 	public v2d toScreen(PApplet pa){
 	/*	double ef = v3d.dis(view.E, view.F); 
 		v3d EP = v3d.vec(view.E, this);

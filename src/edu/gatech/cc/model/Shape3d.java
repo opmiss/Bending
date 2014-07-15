@@ -191,10 +191,10 @@ public class Shape3d {
 		//spine.saveFrames();
 		this.saveVertices(); 
 	}
-	public Shape3d transform(Curve3d C){
+	public Shape3d transform(Curve3d C, int mode){
 		for (int i=0; i<nv; i++){
 			//G[i].transform(G0[i], C.frame0[P_c[i]], C.frame[P_c[i]]); 
-			G[i] = Transform.map(G0[i], C.frame0[P_c[i]], C.frame[P_c[i]], 1); 
+			G[i] = Transform.map(G0[i], C.frame0[P_c[i]], C.frame[P_c[i]], mode); 
 		}
 		vol = volume(); 
 		return this; 
