@@ -57,7 +57,9 @@ public class BunnyCurve extends PApplet {
 	public void mouseDragged(){
 		if (keyPressed && key=='1'){ 
 			C0.move(0, this);
+			long t = System.currentTimeMillis(); 
 			S0.transform(C0, mode); 
+			System.out.println("Deformation takes "+(System.currentTimeMillis()-t)+" milliseconds." ); 	
 		}
 		else if (keyPressed && key=='2'){
 			C0.move(1, this);
@@ -84,7 +86,10 @@ public class BunnyCurve extends PApplet {
 	public void keyPressed() {
 		if (key=='f') { 
 			for (int i=0; i<3; i++) S0 = S0.refine(); 
+			System.out.println(S0.nv); 
+			long t = System.currentTimeMillis(); 
 			S0.register(C0);
+			System.out.println("Registration takes "+(System.currentTimeMillis()-t)+" milliseconds." ); 
 		}
 		if (key=='c'){
 			System.out.println("save a picture"); 

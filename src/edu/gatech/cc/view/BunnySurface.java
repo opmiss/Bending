@@ -78,7 +78,7 @@ public class BunnySurface extends PApplet{
 		if (key=='s') { 
 			S0.smoothen();
 		}
-		if (key=='r'){
+		if (key=='f'){
 			S0.register(C0);
 			C0.saveFrames();
 			register = true; 

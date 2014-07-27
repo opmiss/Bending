@@ -141,8 +141,30 @@ public class Surface {
 		double m = v3d.dot(v1.add(v2).add(v3).add(v4), v3d.cross(T1(i, j), T2(i, j))); 
 		return m/area(i, j); 
 	}
+	
+	public color[][] mean_color = null;
+	public color[][] gaussian_color = null; 
+	public color[][] area_color = null; 
+	
+	public void computeColor(PApplet pa){
+		double[][] mean_value = new double[num][num]; 
+		double[][] gaussian_value = new double[num][num]; 
+		double[][] area_value = new double[num][num]; 
+		for (int i=0; i<num; i++){
+			for (int j=0; j<num; j++){
+				mean_value[i][j] = this.mean(i, j); 
+				gaussian_value[i][j] = this.gaussian(i, j); 
+				area_value[i][j] = this.area(i, j); 
+			}
+		}
+		mean_color = color.map(mean_value); 
+		gaussian_color = color.map(gaussian_value); 
+		area_color = color.map(area_value); 
+	}
+	/*------------frame---------------*/
 	SurfaceFrame[][] frame0;
 	SurfaceFrame[][] frame; 
+	
 	public void saveFrames(){
 		for (int i=0; i<num; i++){
 			for (int j=0; j<num; j++){
@@ -157,8 +179,6 @@ public class Surface {
 			}
 		}
 	}
-	
-	
 	/*----------display--------------*/
 	public void show(PApplet pa){
 		pa.stroke(200);
@@ -173,16 +193,7 @@ public class Surface {
 			}
 		} 
 		pa.endShape(); 
-		pa.noStroke();
-		pa.sphereDetail(10);
-		color.fill(color.ruby(), pa);
-		for (int i=0; i<4; i++){
-			for (int j=0; j<4; j++){
-				C[i][j].show(6, pa);
-			}
-		}
-	}
-	public void showCtrl(PApplet pa){
+		
 		pa.noStroke();
 		pa.sphereDetail(10);
 		color.fill(color.ruby(), pa);
@@ -193,4 +204,39 @@ public class Surface {
 		}
 	}
 	
+	public void showColor(color[][] tone, PApplet pa){
+		pa.noStroke(); 
+		pa.beginShape(PApplet.QUADS); 
+		for (int i=0; i<num-1; i++){
+			for (int j=0; j<num-1; j++){
+				color.fill(tone[i][j], pa);
+				P[i][j].vert(pa); 
+				color.fill(tone[i][j+1], pa);
+				P[i][j+1].vert(pa);
+				color.fill(tone[i+1][j+1], pa);
+				P[i+1][j+1].vert(pa);
+				color.fill(tone[i+1][j], pa);
+				P[i+1][j].vert(pa);
+			}
+		} 
+		pa.endShape(); 
+		pa.sphereDetail(10);
+		color.fill(color.ruby(), pa);
+		for (int i=0; i<4; i++){
+			for (int j=0; j<4; j++){
+				C[i][j].show(6, pa);
+			}
+		}
+	}
+	
+	public void showCtrl(PApplet pa){
+		pa.noStroke();
+		pa.sphereDetail(10);
+		color.fill(color.ruby(), pa);
+		for (int i=0; i<4; i++){
+			for (int j=0; j<4; j++){
+				C[i][j].show(6, pa);
+			}
+		}
+	}
 }

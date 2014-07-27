@@ -65,7 +65,6 @@ public class Register {
 		volume = new ArrayList<Double>(); 
 		for (Shape3d object:objects){
 			for (int i=0; i<object.nv;i++){
-				System.out.println(i); 
 				object.G[i].set(parameters.get(o)[i].reconstruct(proxy));
 			}
 			o++; 

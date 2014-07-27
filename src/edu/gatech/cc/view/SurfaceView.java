@@ -9,6 +9,7 @@ public class SurfaceView extends PApplet {
 	Shape3d obj = new Shape3d(this); 
 	Surface surface; 
 	v3d[][] P; 
+	int show_color=0; 
 
 	public void setup() {
 		this.size(1280, 720, PApplet.P3D); 
@@ -29,7 +30,20 @@ public class SurfaceView extends PApplet {
 	public void draw() {  
 	  background(255);
 	  view.setupView(this);
-	  surface.show(this);
+	  switch(show_color){ 
+	  case 1: 
+		  surface.showColor(surface.area_color, this);
+		  break; 
+	  case 2: 
+		  surface.showColor(surface.gaussian_color, this);
+		  break; 
+	  case 3: 
+		  surface.showColor(surface.mean_color, this);
+		  break; 
+	  default:
+		  surface.show(this);
+		  break; 
+	  }
 	}
 	public void scribe(){
 		this.textSize(32);
@@ -54,6 +68,12 @@ public class SurfaceView extends PApplet {
 		
 	}
 	public void keyPressed() {
+		if (key>='0' && key<='3'){
+			int p = show_color; 
+			show_color = Character.getNumericValue(key); 
+			System.out.println(show_color); 
+			if (p==0 && show_color>0) surface.computeColor(this);
+		}
 		if (key=='s') { 
 
 		}
@@ -61,6 +81,7 @@ public class SurfaceView extends PApplet {
 		
 		}
 		if (key=='c'){
+			this.saveFrame("surfaceview-####.png"); 
 
 		}
 		if (key==' '){

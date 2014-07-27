@@ -65,8 +65,10 @@ public class BunnyMesh extends PApplet{
 	public void mouseDragged(){
 		if (keyPressed && key == 'p'){
 			C0.translate(this);
+			long t = System.currentTimeMillis(); 
 			M0.set(C0);
 			R.reconstruct();
+			System.out.println("Deformation takes "+(System.currentTimeMillis()-t)+" milliseconds." ); 
 		}
 		else{ 
 			C0.move(this);
@@ -86,7 +88,10 @@ public class BunnyMesh extends PApplet{
 	}
 	public void keyPressed() {
 		if (key=='f') { 
+			long t = System.currentTimeMillis(); 
 			R.register();
+			System.out.println("Registration takes "+(System.currentTimeMillis()-t)+" milliseconds." ); 
+			
 		}
 		if (key=='c'){
 			System.out.println("save a frame");

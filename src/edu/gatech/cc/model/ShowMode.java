@@ -58,11 +58,27 @@ public enum ShowMode {
 				int nj = j+1; 
 				if (j==ns-1) nj =0; 
 				color.fill(Color[j%Color.length], pa);
-				showQuad(surf, i, ni, nj, j, pa); 
+				drawQuad(surf, i, ni, nj, j, pa); 
 			}
 		}
 		pa.endShape();
 	}
+	
+	public static void showRings(v3d[][] surf, int np, int ns, int[] id, PApplet pa){
+		pa.beginShape(PApplet.QUADS);
+		for (int k=0; k<id.length; k++){
+			int i= id[k]; 
+			if (i==np-1) --i; 
+			int ni = i+1; 
+			for (int j=0; j<ns; j++){
+				int nj = j+1; 
+				if (j==ns-1) nj=0; 
+				drawQuad(surf, i, ni, nj, j, pa); 
+			}
+		}
+		pa.endShape(); 
+	}
+	
 	//show color stripe
 	public static void showColorStripe(v3d[][] surf, int np, int ns, PApplet pa){
 		int sn = ns/4; 
@@ -74,12 +90,12 @@ public enum ShowMode {
 				int nj = j+1; 
 				if (j==ns-1) nj =0; 
 				color.fill(Color[j/sn], pa);
-				showQuad(surf, i, ni, nj, j, pa); 
+				drawQuad(surf, i, ni, nj, j, pa); 
 			}
 		}
 		pa.endShape();
 	}
-	public static void showQuad(v3d[][] surf, int i, int ni, int nj, int j, PApplet pa){
+	public static void drawQuad(v3d[][] surf, int i, int ni, int nj, int j, PApplet pa){
 		surf[i][j].vert(pa); 
 		surf[ni][j].vert(pa);  
 		surf[ni][nj].vert(pa); 

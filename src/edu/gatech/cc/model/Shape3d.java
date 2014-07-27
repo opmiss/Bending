@@ -159,9 +159,9 @@ public class Shape3d {
 		P_c = new int[nv]; 
 		double dis, min_dis; 
 		for (int i=0; i<nv; i++){
-			min_dis = v3d.dis(G[i], spine.P[0]);
+			min_dis = v3d.dis(G[i], spine.pts[0]);
 			for (int j=1; j<spine.num; j++){
-				dis = v3d.dis(G[i], spine.P[j]); 
+				dis = v3d.dis(G[i], spine.pts[j]); 
 				if (dis < min_dis){
 					min_dis = dis; 
 					P_c[i] = j; 

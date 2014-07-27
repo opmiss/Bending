@@ -102,6 +102,38 @@ public class color {
 		else if (key < 1) return color.lerp(red4(), (key-0.8f)*5, red5()); 
 		else return color.red5(); 
 	}
+	
+	public static color[] map(double[] val){
+		double max = Double.MIN_VALUE, min = Double.MAX_VALUE; 
+		for (double v:val) {
+			max = (max<v)?v:max; min = (min>v)?v:min; 
+		}
+		color[] ret = new color[val.length]; 
+		double span = max-min; 
+		for (int i=0; i<val.length; i++){
+			ret[i] = findColor((float)((val[i]-min)/span)); 
+		}
+		return ret; 
+	}
+	
+	public static color[][] map(double[][] val){
+		double max = Double.MIN_VALUE, min = Double.MAX_VALUE; 
+		for (int i=0; i<val.length; i++) {
+			for (int j=0; j<val.length; j++){
+				double v = val[i][j]; 
+				max = (max<v)?v:max; min = (min>v)?v:min; 
+			}
+		}
+		color[][] ret = new color[val.length][val.length]; 
+		double span = max-min; 
+		for (int i=0; i<val.length; i++){
+			for (int j=0; j<val.length; j++){
+				ret[i][j] = findColor((float)((val[i][j]-min)*2/span-1)); 
+			}
+		}
+		return ret; 
+	}
+	
 	public static void showMap(PApplet pa, float height){
 		pa.noStroke(); 
 		pa.beginShape(PApplet.QUAD_STRIP); 
@@ -118,10 +150,12 @@ public class color {
 		if (c.a<0) pa.fill(c.r, c.g, c.b);
 		else pa.fill(c.r, c.g, c.b, c.a); 
 	}
+	public void fill(PApplet pa){
+		pa.fill(r, g, b);
+	}
 	public static void fill(color c, int op, PApplet pa){
 		pa.fill(c.r, c.g, c.b, op);
 	}
-	
 	public static void stroke(color c, PApplet pa){
 		pa.stroke(c.r, c.g, c.b); 
 	}

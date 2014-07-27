@@ -65,6 +65,9 @@ public class Tiles {
 	public void show(PApplet pa){
 		smode.show(this, pa); 
 	}
+	public void showCtrlRings(PApplet pa){
+		ShowMode.showRings(grid, np, slice_num, spine.cid, pa);
+	}
 	public void showCubes(int is, int js, float rs, int ie, int je, int re){
 		
 	}

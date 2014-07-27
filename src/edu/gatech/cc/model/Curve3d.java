@@ -4,15 +4,18 @@ import edu.gatech.cc.geo.v3d;
 import edu.gatech.cc.geo.view;
 
 public class Curve3d {
-	public v3d[] C; //control points 
-	v3d[] P; //curve points 
+	public v3d[] ctrl; //control points 
+	public int[] cid; 
+	v3d[] pts; //curve points 
 	int num; 
 	double step; 
 	public Curve3d(v3d[] Ctrl, int N){
-		C = Ctrl; 
+		ctrl = Ctrl; 
+		cid = new int[4]; 
+		cid[0] = 0; cid[1] = N/3; cid[2] = cid[1]*2; cid[3] = N-1;  
 		step = 1.0/N;
 		num = N+1; 
-		P = new v3d[num]; 
+		pts = new v3d[num]; 
 		fillPts(step); 
 		frame0 = new CurveFrame[num]; 
 		frame = new CurveFrame[num];
@@ -31,8 +34,9 @@ public class Curve3d {
 	}
 	void fillPts(double d){
 		int i=0; 
+		int k=0; 
 		for (double s=0; s<=1.0001; s+=d){ 
-			P[i++] = v3d.NI(0, C[0], 1.0/3, C[1], 2.0/3, C[2], 1.0, C[3], s); 
+			pts[i++] = v3d.NI(0, ctrl[0], 1.0/3, ctrl[1], 2.0/3, ctrl[2], 1.0, ctrl[3], s); 
 		}
 		num=i; 
 	}
@@ -41,7 +45,7 @@ public class Curve3d {
 		double dis = 100; 
 		int id = -1; 
 		for (int i=0; i<4; i++){
-			double d = v3d.dis(C[i], M); 
+			double d = v3d.dis(ctrl[i], M); 
 			if (d<dis) {dis = d; id =i; } 
 		}
 		pid = id; 
@@ -50,12 +54,12 @@ public class Curve3d {
 		pid=-1; 
 	}
 	public void move(int i, PApplet pa){
-		C[i] = C[i].add((pa.mouseY - pa.pmouseY)*0.5, view.J); 
-		C[i] = C[i].add((pa.mouseX - pa.pmouseX)*0.5, view.I);
+		ctrl[i] = ctrl[i].add((pa.mouseY - pa.pmouseY)*0.5, view.J); 
+		ctrl[i] = ctrl[i].add((pa.mouseX - pa.pmouseX)*0.5, view.I);
 		compute();
 	}
 	public void translate(int i, PApplet pa){
-		C[i] = C[i].add((pa.mouseX - pa.pmouseX)*0.5, view.K); 
+		ctrl[i] = ctrl[i].add((pa.mouseX - pa.pmouseX)*0.5, view.K); 
 		compute(); 
 	}
 	
@@ -68,13 +72,13 @@ public class Curve3d {
 	}
 
 	double length(int i) { 
-		if (i==0) return v3d.dis(P[0], P[n(0)])/dl;
-		if (i==num-1) return v3d.dis(P[num-1], P[p(num-1)])/dl;
-		return v3d.dis(P[p(i)], P[i]) + v3d.dis(P[i], P[n(i)])/two_dl;
+		if (i==0) return v3d.dis(pts[0], pts[n(0)])/dl;
+		if (i==num-1) return v3d.dis(pts[num-1], pts[p(num-1)])/dl;
+		return v3d.dis(pts[p(i)], pts[i]) + v3d.dis(pts[i], pts[n(i)])/two_dl;
 	}
 	
 	v3d tangent(int i) {
-		v3d p = v3d.vec(P[p(i)], P[n(i)]);
+		v3d p = v3d.vec(pts[p(i)], pts[n(i)]);
 		return p; 
 	}
 	
@@ -93,11 +97,11 @@ public class Curve3d {
 	}
 	
 	public void computeFrame(){
-		frame[0] = CurveFrame.first(P[0], P[1], P[2]);
+		frame[0] = CurveFrame.first(pts[0], pts[1], pts[2]);
 		for (int i=1; i<num-1; i++){
-			frame[i] = CurveFrame.median(frame[i-1], P[i-1], P[i], P[i+1]); 
+			frame[i] = CurveFrame.median(frame[i-1], pts[i-1], pts[i], pts[i+1]); 
 		}
-		frame[num-1] = CurveFrame.last(frame[num-2], P[num-3], P[num-2], P[num-1]);  
+		frame[num-1] = CurveFrame.last(frame[num-2], pts[num-3], pts[num-2], pts[num-1]);  
 	}
 
 	/*----------------------------Display--------------------------------*/
@@ -107,6 +111,10 @@ public class Curve3d {
 	}
 	
 	public void showCtrl(PApplet pa){
-		for (int i=0; i<4; i++) C[i].show(30, pa);
+		for (int i=0; i<4; i++) ctrl[i].show(32, pa);
+	}
+	
+	public void showCtrlRings(PApplet pa){
+		tiles.showCtrlRings(pa);
 	}
 }

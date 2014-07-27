@@ -1,39 +1,41 @@
 package edu.gatech.cc.view;
 import processing.core.PApplet;
+import edu.gatech.cc.geo.color;
 import edu.gatech.cc.geo.v3d;
 import edu.gatech.cc.geo.view;
 import edu.gatech.cc.model.Curve3d;
 import edu.gatech.cc.model.Shape3d;
 
 public class Cylinder extends PApplet {
-	Shape3d S0 = new Shape3d(this); 
-	Curve3d C0; 
-	int mode = 3; 
-	String bmode = "radial"; 
-	v3d[] P = new v3d[4]; 
+	Shape3d dummy = new Shape3d(this); 
+	Curve3d cylinder; 
+	int mode = 0; 
+	String bmode = "no correction"; 
+	v3d[] control = new v3d[4]; 
 	public void setup() {
 		this.size(1280, 720, PApplet.P3D); 
 		view.initView();
-		S0.declareVectors(); 
-		S0.loadMeshVTS(this); 
-		S0 = S0.computeBox();
-		P = new v3d[4]; 
-		P[0] = v3d.pt(S0.Wbox); P[0].add(-S0.rbox*1.2, view.I); 
-		P[1] = v3d.pt(S0.Wbox); P[1].add(-S0.rbox*0.4, view.I); 
-		P[2] = v3d.pt(S0.Wbox); P[2].add(S0.rbox*0.4, view.I); 
-		P[3] = v3d.pt(S0.Wbox); P[3].add(S0.rbox*1.2, view.I); 
-		C0 = new Curve3d(P, 100); 
-		C0.setCylinder();
-		C0.saveFrames();
-		C0.tiles.saveVertices();
+		dummy.declareVectors(); 
+		dummy.loadMeshVTS(this); 
+		dummy = dummy.computeBox();
+		control = new v3d[4]; 
+		control[0] = v3d.pt(dummy.Wbox); control[0].add(-dummy.rbox*1.2, view.I); 
+		control[1] = v3d.pt(dummy.Wbox); control[1].add(-dummy.rbox*0.4, view.I); 
+		control[2] = v3d.pt(dummy.Wbox); control[2].add(dummy.rbox*0.4, view.I); 
+		control[3] = v3d.pt(dummy.Wbox); control[3].add(dummy.rbox*1.2, view.I); 
+		cylinder = new Curve3d(control, 100); 
+		cylinder.setCylinder();
+		cylinder.saveFrames();
+		cylinder.tiles.saveVertices();
 		textAlign(PApplet.LEFT, PApplet.TOP);
 	}
 	public void draw() {  
 	  background(255);
 	  view.setupView(this);
-	  fill(255,255, 0); 
 	  this.noStroke(); 
-	  C0.show(this);
+	  cylinder.show(this);
+	  color.green().fill(this);
+	  cylinder.showCtrlRings(this);
 	 // this.sphere(30);
 	  if (keyPressed && key=='r'&& mousePressed) {
 		  view.rotate(this);
@@ -49,20 +51,20 @@ public class Cylinder extends PApplet {
 	}
 	public void mouseDragged(){
 		if (keyPressed && key=='1'){ 
-			C0.move(0, this);
-			C0.tiles.transform(C0, mode); 
+			cylinder.move(0, this);
+			cylinder.tiles.transform(cylinder, mode); 
 		}
 		else if (keyPressed && key=='2'){
-			C0.move(1, this);
-			C0.tiles.transform(C0, mode); 
+			cylinder.move(1, this);
+			cylinder.tiles.transform(cylinder, mode); 
 		}
 		else if (keyPressed && key=='3'){
-			C0.move(2, this);
-			C0.tiles.transform(C0, mode); 
+			cylinder.move(2, this);
+			cylinder.tiles.transform(cylinder, mode); 
 		}
 		else if (keyPressed && key=='4'){	
-			C0.move(3, this);
-			C0.tiles.transform(C0, mode); 
+			cylinder.move(3, this);
+			cylinder.tiles.transform(cylinder, mode); 
 		}
 	}
 	public void scribe(){
@@ -86,15 +88,19 @@ public class Cylinder extends PApplet {
 		}
 		if (key=='7'){
 			mode = 1; bmode = "normal"; 
-			C0.tiles.transform(C0, mode); 
+			cylinder.tiles.transform(cylinder, mode); 
 		}
-		if (key=='8'){
+		else if (key=='8'){
 			mode = 2; bmode = "binormal"; 
-			C0.tiles.transform(C0, mode); 
+			cylinder.tiles.transform(cylinder, mode); 
 		}
-		if (key=='9'){
+		else if (key=='9'){
 			mode = 3; bmode = "radial"; 
-			C0.tiles.transform(C0, mode); 
+			cylinder.tiles.transform(cylinder, mode); 
+		}
+		else if (key=='0'){
+			mode = 0; bmode = "no correction"; 
+			cylinder.tiles.transform(cylinder, mode); 
 		}
 	}
 }
