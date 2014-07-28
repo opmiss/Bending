@@ -16,7 +16,7 @@ public class Cylinder extends PApplet {
 		this.size(1280, 720, PApplet.P3D); 
 		view.initView();
 		dummy.declareVectors(); 
-		dummy.loadMeshVTS(this); 
+		dummy.loadMeshVTS(true, this); 
 		dummy = dummy.computeBox();
 		control = new v3d[4]; 
 		control[0] = v3d.pt(dummy.Wbox); control[0].add(-dummy.rbox*1.2, view.I); 

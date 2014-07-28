@@ -37,6 +37,7 @@ public class Tiles {
 		smode = show; 
 	}
 	public void createTiles(){ 
+		np = spine.num; 
 		grid = new v3d[np][slice_num]; 
 		for (int i=0; i<np; i++){
 			grid[i] = getSpine().getPFrame(i).slice(offset_dis, slice_num); 

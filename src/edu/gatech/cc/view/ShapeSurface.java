@@ -5,7 +5,7 @@ import edu.gatech.cc.geo.view;
 import edu.gatech.cc.model.Surface;
 import edu.gatech.cc.model.Shape3d;
 
-public class BunnySurface extends PApplet{
+public class ShapeSurface extends PApplet{
 	Shape3d S0 = new Shape3d(this); 
 	Surface C0; 
 	v3d[][] P; 
@@ -15,7 +15,7 @@ public class BunnySurface extends PApplet{
 		this.size(1280, 720, PApplet.P3D); 
 		view.initView();
 		S0.declareVectors(); 
-		S0.loadMeshVTS(this); 
+		S0.loadMeshVTS(true, this); 
 		S0 = S0.computeBox();
 		for (int i=0; i<3; i++) S0 = S0.refine(); 
 		P = new v3d[4][4]; 

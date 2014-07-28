@@ -143,8 +143,7 @@ public class v3d {
 				(A.z + B.z) / 2.0f);
 	} // (A+B)/2
 	public static v3d V(v3d A, double s, v3d B) {
-		return new v3d(A.x + s * (B.x - A.x), A.y + s * (B.y - A.y), A.z + s
-				* (B.z - A.z));
+		return new v3d(A.x + s * (B.x - A.x), A.y + s * (B.y - A.y), A.z + s * (B.z - A.z));
 	}; // (1-s)A+sB
 	v3d V(v3d A, v3d B, v3d C) {
 		return new v3d((A.x+B.x+C.x)/3.0f, (A.y+B.y+C.y)/3.0f, (A.z+B.z+C.z)/3.0f);
@@ -199,6 +198,12 @@ public class v3d {
 		double dy = (Q.y-P.y); 
 		double dz = (Q.z-P.z);
 		return Math.sqrt(dx*dx+dy*dy+dz*dz); 
+	}
+	public static double dis2(v3d P, v3d Q){
+		double dx = (Q.x-P.x); 
+		double dy = (Q.y-P.y); 
+		double dz = (Q.z-P.z);
+		return dx*dx+dy*dy+dz*dz; 
 	}
 	@Override 
 	public String toString(){

@@ -22,7 +22,7 @@ public class Spheres extends PApplet{
 		this.size(1280, 720, PApplet.P3D); 
 		view.initView();
 		S0.declareVectors(); 
-		S0.loadMeshVTS(this); 
+		S0.loadMeshVTS(true, this); 
 		S0 = S0.computeBox();
 		P = new v3d[4][4]; 
 		for (int i=0; i<4; i++){

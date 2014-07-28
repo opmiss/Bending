@@ -650,6 +650,7 @@ public class Shape3d {
 	}
 
 	public Shape3d refine() {
+		if (nv > maxnv/4) return this; 
 		updateON();
 		splitEdges();
 		bulge();
@@ -788,18 +789,18 @@ public class Shape3d {
 		pa.saveStrings(fn, inppts);
 	}
 
-	public Shape3d loadMeshVTS(PApplet pa) {
+	public Shape3d loadMeshVTS(boolean up, PApplet pa) {
 		String loadPath = pa.selectInput("Select .vts mesh file to load"); 
 		if (loadPath == null) {
 			System.out.println("No input file was selected...");
 			return this;
 		} else
 			System.out.println("reading from " + loadPath);
-		loadMeshVTS(loadPath, pa);
+		loadMeshVTS(loadPath, up, pa);
 		return this;
 	}
 
-	public Shape3d loadMeshVTS(String fn, PApplet pa) {
+	public Shape3d loadMeshVTS(String fn, boolean up, PApplet pa) {
 		System.out.println("loading: " + fn);
 		String[] ss = pa.loadStrings(fn);
 		int s = 0;
@@ -816,7 +817,8 @@ public class Shape3d {
 			comma2 = rest.indexOf(',');
 			y = Float.parseFloat(rest.substring(0, comma2));
 			z = Float.parseFloat(rest.substring(comma2 + 1, rest.length()));
-			G[k].set(x, y, z);
+			if (up) G[k].set(x, y, z); 
+			else G[k].set(x, -y, -z);
 			//pa.println(k+":"+"("+x+","+y+","+z+"),");
 		}
 		s = nv + 1;
