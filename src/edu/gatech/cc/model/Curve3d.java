@@ -71,11 +71,7 @@ public class Curve3d {
 		num = vlist.size(); 
 		pts = new v3d[num];
 		for (int k=0; k<num; k++) pts[k] = vlist.get(k); 
-		/*------*/
-		System.out.println("num---:"+num); 
-		for (int k=0; k<num; k++) pts[k].print(); 
 		this.computeFrame();
-		/*------*/	
 		tiles.createTiles(); 
 		//System.out.println("np---:"+tiles.np); 
 	}
@@ -103,7 +99,6 @@ public class Curve3d {
 				v3d ap = v3d.V(A, s, B); 
 				NL.add(ap); 
 				C.set(ap);
-				C.print("C: "); 
 				i = j;
 			}
 		}

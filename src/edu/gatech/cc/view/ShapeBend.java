@@ -8,14 +8,14 @@ import edu.gatech.cc.model.Shape3d;
 public class ShapeBend extends PApplet{
 	Shape3d shape = new Shape3d(this); 
 	Curve3d spine; 
-	int mode =1; 
-	String bmode = "normal"; 
+	int mode =3; 
+	String bmode = "radial"; 
 	v3d[] P = new v3d[4]; 
 	public void setup() {
 		this.size(1280, 720, PApplet.P3D); 
 		view.initView();
 		shape.declareVectors(); 
-		shape.loadMeshVTS(false, this); 
+		shape.loadMeshVTS(true, this); 
 		shape = shape.computeBox();
 		P = new v3d[4]; 
 		P[0] = v3d.pt(shape.Wbox); P[0].add(-shape.rbox*1.2, view.I); 
